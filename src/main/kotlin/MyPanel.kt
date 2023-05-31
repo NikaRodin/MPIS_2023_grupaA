@@ -2,10 +2,13 @@ import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import javax.swing.JPanel
+import kotlin.math.max
+import kotlin.math.min
 
 class MyPanel internal constructor() : JPanel() {
 
     //Image image;
+    private val dalPolje1: DalekovodnoPolje
 
     init {
 
@@ -21,15 +24,26 @@ class MyPanel internal constructor() : JPanel() {
             override fun mouseEntered(p0: MouseEvent?) {}
             override fun mouseExited(p0: MouseEvent?) {}
         })
+
+        dalPolje1 = DalekovodnoPolje(0, 0, listOf(
+            SabirnicaIRastavljac(
+                Sabirnica(0, 0, 250, 10),
+                Rastavljac(Coordinate(50, 75))
+            ),
+            SabirnicaIRastavljac(
+                Sabirnica(0, 20, 250, 10),
+                Rastavljac(Coordinate(150, 75))
+            ),
+        ))
     }
 
     override fun paint(g: Graphics) {
         val g2D = g as Graphics2D
 
 //        g2D.drawImage(image, 0, 0, null);
-        g2D.paint = Color.blue
-        g2D.stroke = BasicStroke(5f)
-        g2D.drawLine(0, 0, 500, 500)
+//        g2D.paint = Color.blue
+//        g2D.stroke = BasicStroke(5f)
+//        g2D.drawLine(0, 0, 500, 500)
 
 //        g2D.setPaint(Color.pink);
 //        g2D.drawRect(0, 0, 100, 200);
@@ -54,8 +68,27 @@ class MyPanel internal constructor() : JPanel() {
 //        g2D.setPaint(Color.magenta);
 //        g2D.setFont(Font("Ink Free",Font.BOLD,50));
 //        g2D.drawString("U R A WINNER! :D", 50, 50);
+
+
+        drawDalekovodnoPolje(g2D, dalPolje1)
     }
 
+    private fun drawDalekovodnoPolje(g: Graphics2D, polje: DalekovodnoPolje) {
+        g.paint = Color.blue
+        for (sabirnicaIRastavljac in polje.sabirniceIRastavljaci) {
+            val s = sabirnicaIRastavljac.sabirnica
+            g.fillRect(s.x, s.y, s.width, s.height)
 
+            val r = sabirnicaIRastavljac.rastavljac
+            val rastavljacSize = 50
+            g.fillRect(r.coordinate.x, r.coordinate.y, rastavljacSize, rastavljacSize)
 
+            // connection
+            val upY = min(s.y, r.coordinate.y)
+            val downY = max(s.y, r.coordinate.y)
+            val lineWidth = 20
+            val rastavljacMiddle = r.coordinate.x + rastavljacSize/2
+            g.fillRect(rastavljacMiddle - lineWidth/2, upY, lineWidth, downY - upY)
+        }
+    }
 }
