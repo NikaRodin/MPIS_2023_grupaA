@@ -17,31 +17,21 @@ class MyPanel internal constructor() : JPanel() {
         //image = new ImageIcon("sky.png").getImage();
         this.preferredSize = Dimension(650, 500)
 
-        addMouseListener(object : MouseListener {
-            override fun mouseClicked(p0: MouseEvent?) {
-                println("clicked x, y: ${p0?.x}, ${p0?.y}")
-            }
-            override fun mousePressed(p0: MouseEvent?) {}
-            override fun mouseReleased(p0: MouseEvent?) {}
-            override fun mouseEntered(p0: MouseEvent?) {}
-            override fun mouseExited(p0: MouseEvent?) {}
-        })
-
         dalPolje1 = DalekovodnoPolje(
             0, 0,
             listOf(
                 SabirnicaIRastavljac(
                     Sabirnica(0, 0, 250, 10),
-                    Rastavljac(Coordinate(50, 75))
+                    Rastavljac("Rastavljac S1", StanjeSklopnogUredaja.OFF, Coordinate(50, 75))
                 ),
                 SabirnicaIRastavljac(
                     Sabirnica(0, 20, 250, 10),
-                    Rastavljac(Coordinate(150, 75))
+                    Rastavljac("Rastavljac S2", StanjeSklopnogUredaja.OFF, Coordinate(150, 75))
                 ),
             ),
-            Prekidac(Coordinate(100, 200)),
-            Rastavljac(Coordinate(100, 350)),
-            Rastavljac(Coordinate(200, 275)),
+            Prekidac("Prekidac", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
+            Rastavljac("Izlazni rastavljac", StanjeSklopnogUredaja.OFF, Coordinate(100, 350)),
+            Rastavljac("Rastavljac uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 275)),
         )
 
         dalPolje2 = DalekovodnoPolje(
@@ -49,13 +39,29 @@ class MyPanel internal constructor() : JPanel() {
             listOf(
                 SabirnicaIRastavljac(
                     Sabirnica(0, 0, 250, 10),
-                    Rastavljac(Coordinate(100, 75))
+                    Rastavljac("Rastavljac S", StanjeSklopnogUredaja.OFF, Coordinate(100, 75))
                 ),
             ),
-            Prekidac(Coordinate(100, 200)),
-            Rastavljac(Coordinate(100, 350)),
-            Rastavljac(Coordinate(200, 275)),
+            Prekidac("Prekidac", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
+            Rastavljac("Izlazni rastavljac", StanjeSklopnogUredaja.OFF, Coordinate(100, 350)),
+            Rastavljac("Rastavljac uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 275)),
         )
+
+        addMouseListener(object : MouseListener {
+            override fun mouseClicked(p0: MouseEvent?) {
+                p0?.let {
+                    println("clicked x, y: ${p0.x}, ${p0.y}")
+                    if (dalPolje1.click(p0.x, p0.y) || dalPolje2.click(p0.x, p0.y)) {
+                        revalidate()
+                        repaint()
+                    }
+                }
+            }
+            override fun mousePressed(p0: MouseEvent?) {}
+            override fun mouseReleased(p0: MouseEvent?) {}
+            override fun mouseEntered(p0: MouseEvent?) {}
+            override fun mouseExited(p0: MouseEvent?) {}
+        })
     }
 
     override fun paint(g: Graphics) {
@@ -76,70 +82,77 @@ class MyPanel internal constructor() : JPanel() {
     }
 
     private fun drawDalekovodnoPolje(g: Graphics2D, polje: DalekovodnoPolje) {
-        val rastavljacSize = 50
-        val prekidacSize = 50
-        val lineWidth = 10
+        val defaultColor = Color.black
 
-        g.paint = Color.blue
+        // Sabirnice i rastavljaci
+        g.color = defaultColor
         for (sabirnicaIRastavljac in polje.sabirniceIRastavljaci) {
             val s = sabirnicaIRastavljac.sabirnica
             g.fillRect(s.x, s.y, s.width, s.height)
 
             val r = sabirnicaIRastavljac.rastavljac
-            g.fillRect(r.coordinate.x, r.coordinate.y, rastavljacSize, rastavljacSize)
+            g.color = getColor(r.stanje)
+            g.fillRect(r.coordinate.x, r.coordinate.y, RASTAVLJAC_SIZE, RASTAVLJAC_SIZE)
+            g.color = defaultColor
 
             // connection
             val upY = min(s.y, r.coordinate.y)
             val downY = max(s.y, r.coordinate.y)
-            val rastavljacMiddle = r.coordinate.x + rastavljacSize/2
-            g.fillRect(rastavljacMiddle - lineWidth/2, upY, lineWidth, downY - upY)
+            val rastavljacMiddle = r.coordinate.x + RASTAVLJAC_SIZE/2
+            g.fillRect(rastavljacMiddle - LINE_WIDTH /2, upY, LINE_WIDTH, downY - upY)
         }
 
         // prekidac
-        g.fillOval(polje.prekidac.coordinate.x, polje.prekidac.coordinate.y, prekidacSize, prekidacSize)
+        g.color = getColor(polje.prekidac.stanje)
+        g.fillOval(polje.prekidac.coordinate.x, polje.prekidac.coordinate.y, PREKIDAC_SIZE, PREKIDAC_SIZE)
+        g.color = defaultColor
 
         var minMiddleX = Int.MAX_VALUE
         var maxMiddleX = Int.MIN_VALUE
-        val rastavljaciConnectionLineY = polje.prekidac.coordinate.y - lineWidth - 25
+        val rastavljaciConnectionLineY = polje.prekidac.coordinate.y - LINE_WIDTH - 25
         for (sabirnicaIRastavljac in polje.sabirniceIRastavljaci) {
             val r = sabirnicaIRastavljac.rastavljac
-            val rastavljacMiddle = r.coordinate.x + rastavljacSize/2
-            val topY = r.coordinate.y + rastavljacSize
-            g.fillRect(rastavljacMiddle - lineWidth/2, topY, lineWidth, rastavljaciConnectionLineY - topY)
+            val rastavljacMiddle = r.coordinate.x + RASTAVLJAC_SIZE/2
+            val topY = r.coordinate.y + RASTAVLJAC_SIZE
+            g.fillRect(rastavljacMiddle - LINE_WIDTH/2, topY, LINE_WIDTH, rastavljaciConnectionLineY - topY)
 
             minMiddleX = min(minMiddleX, rastavljacMiddle)
             maxMiddleX = max(maxMiddleX, rastavljacMiddle)
         }
 
-        val left = minMiddleX - lineWidth/2
-        val right = maxMiddleX + lineWidth/2
-        g.fillRect(left, rastavljaciConnectionLineY, right - left, lineWidth)
+        val left = minMiddleX - LINE_WIDTH/2
+        val right = maxMiddleX + LINE_WIDTH/2
+        g.fillRect(left, rastavljaciConnectionLineY, right - left, LINE_WIDTH)
 
-        val prekidacMiddleX = polje.prekidac.coordinate.x + prekidacSize/2
-        g.fillRect(prekidacMiddleX - lineWidth/2, rastavljaciConnectionLineY+1, lineWidth, polje.prekidac.coordinate.y - rastavljaciConnectionLineY)
+        val prekidacMiddleX = polje.prekidac.coordinate.x + PREKIDAC_SIZE/2
+        g.fillRect(prekidacMiddleX - LINE_WIDTH/2, rastavljaciConnectionLineY+1, LINE_WIDTH, polje.prekidac.coordinate.y - rastavljaciConnectionLineY)
 
 
         // Izlazni rastavljac
-        g.fillRect(polje.izlazniRastavljac.coordinate.x, polje.izlazniRastavljac.coordinate.y, prekidacSize, prekidacSize)
+        g.color = getColor(polje.izlazniRastavljac.stanje)
+        g.fillRect(polje.izlazniRastavljac.coordinate.x, polje.izlazniRastavljac.coordinate.y, PREKIDAC_SIZE, PREKIDAC_SIZE)
+        g.color = defaultColor
 
-        val prekidacBottom = polje.prekidac.coordinate.y + prekidacSize
-        g.fillRect(prekidacMiddleX - lineWidth/2, prekidacBottom, lineWidth, polje.izlazniRastavljac.coordinate.y - prekidacBottom)
+        val prekidacBottom = polje.prekidac.coordinate.y + PREKIDAC_SIZE
+        g.fillRect(prekidacMiddleX - LINE_WIDTH/2, prekidacBottom, LINE_WIDTH, polje.izlazniRastavljac.coordinate.y - prekidacBottom)
 
 
         // Rastavljac uzemljenja
-        g.fillRect(polje.rastavljacUzemljenja.coordinate.x, polje.rastavljacUzemljenja.coordinate.y, prekidacSize, prekidacSize)
+        g.color = getColor(polje.rastavljacUzemljenja.stanje)
+        g.fillRect(polje.rastavljacUzemljenja.coordinate.x, polje.rastavljacUzemljenja.coordinate.y, PREKIDAC_SIZE, PREKIDAC_SIZE)
+        g.color = defaultColor
 
-        val rastavljacUzemljenjaMidY = polje.rastavljacUzemljenja.coordinate.y + rastavljacSize/2
-        g.fillRect(prekidacMiddleX, rastavljacUzemljenjaMidY - lineWidth/2, polje.rastavljacUzemljenja.coordinate.x - prekidacMiddleX, lineWidth)
+        val rastavljacUzemljenjaMidY = polje.rastavljacUzemljenja.coordinate.y + RASTAVLJAC_SIZE/2
+        g.fillRect(prekidacMiddleX, rastavljacUzemljenjaMidY - LINE_WIDTH/2, polje.rastavljacUzemljenja.coordinate.x - prekidacMiddleX, LINE_WIDTH)
 
         // Dalekovod strelica
         val arrowX = prekidacMiddleX.toDouble()
         val arrowY = polje.izlazniRastavljac.coordinate.y.toDouble()
         val dalekovodArrowLine = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 95.0)
         val dalekovodArrowLine2 = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 100.0)
-        g.stroke = BasicStroke(lineWidth.toFloat())
+        g.stroke = BasicStroke(LINE_WIDTH.toFloat())
         g.draw(dalekovodArrowLine)
-        drawArrowHead(g, dalekovodArrowLine2, lineWidth)
+        drawArrowHead(g, dalekovodArrowLine2, LINE_WIDTH)
     }
 
     private fun drawArrowHead(g2d: Graphics2D, line: Line2D.Double, arrowSize: Int) {
