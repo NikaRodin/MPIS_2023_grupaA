@@ -4,6 +4,7 @@ import java.awt.event.MouseListener
 import java.awt.geom.AffineTransform
 import java.awt.geom.Line2D
 import javax.swing.JPanel
+import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
 
@@ -66,6 +67,10 @@ class MyPanel internal constructor() : JPanel() {
 
     override fun paint(g: Graphics) {
         val g2d = g as Graphics2D
+        g2d.setRenderingHint(
+            RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON
+        )
         drawPolje(g2d, dalPolje1)
         drawPolje(g2d, dalPolje2)
     }
@@ -139,7 +144,7 @@ class MyPanel internal constructor() : JPanel() {
 
         // Rastavljac uzemljenja
         g.color = getColor(polje.rastavljacUzemljenja.stanje)
-        g.fillRect(polje.rastavljacUzemljenja.coordinate.x, polje.rastavljacUzemljenja.coordinate.y, PREKIDAC_SIZE, PREKIDAC_SIZE)
+        g.fillRect(polje.rastavljacUzemljenja.coordinate.x, polje.rastavljacUzemljenja.coordinate.y, RASTAVLJAC_SIZE, RASTAVLJAC_SIZE)
         g.color = defaultColor
 
         val rastavljacUzemljenjaMidY = polje.rastavljacUzemljenja.coordinate.y + RASTAVLJAC_SIZE/2
@@ -147,10 +152,10 @@ class MyPanel internal constructor() : JPanel() {
 
         // Dalekovod strelica
         val arrowX = prekidacMiddleX.toDouble()
-        val arrowY = polje.izlazniRastavljac.coordinate.y.toDouble()
-        val dalekovodArrowLine = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 95.0)
-        val dalekovodArrowLine2 = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 100.0)
-        g.stroke = BasicStroke(LINE_WIDTH.toFloat())
+        val arrowY = polje.izlazniRastavljac.coordinate.y.toDouble() + RASTAVLJAC_SIZE
+        val dalekovodArrowLine = Line2D.Double(arrowX, arrowY-1, arrowX, arrowY + 60.0)
+        val dalekovodArrowLine2 = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 60.0 + LINE_WIDTH)
+        g.stroke = BasicStroke(LINE_WIDTH.toFloat(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL)
         g.draw(dalekovodArrowLine)
         drawArrowHead(g, dalekovodArrowLine2, LINE_WIDTH)
     }
@@ -162,7 +167,7 @@ class MyPanel internal constructor() : JPanel() {
         arrowHead.addPoint(arrowSize, -arrowSize)
 
         val tx = AffineTransform(g2d.transform)
-        val angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1)
+        val angle = atan2(line.y2 - line.y1, line.x2 - line.x1)
         tx.translate(line.x2, line.y2)
         tx.rotate(angle - Math.PI / 2.0)
         val g = g2d.create() as Graphics2D
