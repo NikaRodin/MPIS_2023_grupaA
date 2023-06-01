@@ -67,6 +67,7 @@ class MyPanel internal constructor() : JPanel() {
 
     override fun paint(g: Graphics) {
         val g2d = g as Graphics2D
+        g2d.clearRect(g2d.clipBounds.x, g2d.clipBounds.y, g2d.clipBounds.width, g2d.clipBounds.height)
         g2d.setRenderingHint(
             RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON
