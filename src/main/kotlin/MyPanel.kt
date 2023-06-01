@@ -9,13 +9,13 @@ import kotlin.math.min
 
 class MyPanel internal constructor() : JPanel() {
 
-    //Image image;
-    private val dalPolje1: DalekovodnoPolje
+    val dalPolje1: DalekovodnoPolje
+    val dalPolje2: DalekovodnoPolje
 
     init {
 
         //image = new ImageIcon("sky.png").getImage();
-        this.preferredSize = Dimension(500, 500)
+        this.preferredSize = Dimension(650, 500)
 
         addMouseListener(object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
@@ -43,11 +43,36 @@ class MyPanel internal constructor() : JPanel() {
             Rastavljac(Coordinate(100, 350)),
             Rastavljac(Coordinate(200, 275)),
         )
+
+        dalPolje2 = DalekovodnoPolje(
+            350, 0,
+            listOf(
+                SabirnicaIRastavljac(
+                    Sabirnica(0, 0, 250, 10),
+                    Rastavljac(Coordinate(100, 75))
+                ),
+            ),
+            Prekidac(Coordinate(100, 200)),
+            Rastavljac(Coordinate(100, 350)),
+            Rastavljac(Coordinate(200, 275)),
+        )
     }
 
     override fun paint(g: Graphics) {
-        val g2D = g as Graphics2D
-        drawDalekovodnoPolje(g2D, dalPolje1)
+        val g2d = g as Graphics2D
+        drawPolje(g2d, dalPolje1)
+        drawPolje(g2d, dalPolje2)
+    }
+
+    private fun drawPolje(g2d: Graphics2D, polje: DalekovodnoPolje) {
+        val tx = AffineTransform()
+        tx.setToIdentity()
+        tx.translate(polje.x.toDouble(), polje.y.toDouble())
+
+        val g = g2d.create() as Graphics2D
+        g.transform = tx
+        drawDalekovodnoPolje(g, polje)
+        g.dispose()
     }
 
     private fun drawDalekovodnoPolje(g: Graphics2D, polje: DalekovodnoPolje) {
@@ -123,8 +148,7 @@ class MyPanel internal constructor() : JPanel() {
         arrowHead.addPoint(-arrowSize, -arrowSize)
         arrowHead.addPoint(arrowSize, -arrowSize)
 
-        val tx = AffineTransform()
-        tx.setToIdentity()
+        val tx = AffineTransform(g2d.transform)
         val angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1)
         tx.translate(line.x2, line.y2)
         tx.rotate(angle - Math.PI / 2.0)
