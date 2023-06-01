@@ -1,7 +1,7 @@
 abstract class SklopniUredaj(
     val id: String,
     var stanje: StanjeSklopnogUredaja,
-) : ClickableElement {
+) {
 
     fun toggleStanje() {
         stanje = when (stanje) {
@@ -10,6 +10,21 @@ abstract class SklopniUredaj(
         }
     }
 
+    fun ukljuci() {
+        if (stanje == StanjeSklopnogUredaja.OFF) {
+            stanje = StanjeSklopnogUredaja.ON
+        } else {
+            TODO("error?")
+        }
+    }
+
+    fun iskljuci() {
+        if (stanje == StanjeSklopnogUredaja.ON) {
+            stanje = StanjeSklopnogUredaja.OFF
+        } else {
+            TODO("error?")
+        }
+    }
 }
 
 enum class StanjeSklopnogUredaja {
