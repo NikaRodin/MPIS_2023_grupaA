@@ -7,8 +7,7 @@ class DalekovodnoPolje(
     val rastavljacUzemljenja: Rastavljac,
 ) : Polje(x, y) {
 
-    // Returns an error or null of no error
-    fun click(clickX: Int, clickY: Int): String? {
+    override fun click(clickX: Int, clickY: Int): String? {
         val innerClickX = clickX - x
         val innerClickY = clickY - y
 
