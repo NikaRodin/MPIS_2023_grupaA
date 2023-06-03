@@ -26,11 +26,14 @@ class DalekovodnoPolje(
                     null
                 }
                 StanjeSklopnogUredaja.OFF -> {
-                    if (prekidac.stanje == StanjeSklopnogUredaja.ON) {
-                        "Prekidac mora biti iskljucen!"
-                    } else {
-                        rastavljacUzemljenja.ukljuci()
-                        null
+                    when (prekidac.stanje) {
+                        StanjeSklopnogUredaja.ON -> {
+                            "Prekidac mora biti iskljucen!"
+                        }
+                        StanjeSklopnogUredaja.OFF -> {
+                            rastavljacUzemljenja.ukljuci()
+                            null
+                        }
                     }
                 }
             }
