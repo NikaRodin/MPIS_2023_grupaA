@@ -7,7 +7,8 @@ class MyFrame internal constructor() : JFrame() {
     init {
         panel = MyPanel()
         defaultCloseOperation = EXIT_ON_CLOSE
-        this.add(panel)
+        contentPane.add(panel)
+        contentPane.addMouseListener(panel.mouseListener)
         pack()
         setLocationRelativeTo(null)
         this.isVisible = true
