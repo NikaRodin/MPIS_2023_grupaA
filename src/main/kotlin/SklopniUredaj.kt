@@ -1,6 +1,6 @@
 abstract class SklopniUredaj(
     val id: String,
-    var stanje: StanjeSklopnogUredaja,
+    var stanje: StanjeSklopnogUredaja
 ) {
 
     fun toggleStanje() {
@@ -25,8 +25,21 @@ abstract class SklopniUredaj(
             TODO("error?")
         }
     }
+
+    fun javiGresku(): String{
+        return "$id mora biti " + when(stanje) {
+            StanjeSklopnogUredaja.ON -> "${StanjeSklopnogUredaja.OFF.opis}!"
+            StanjeSklopnogUredaja.OFF -> "${StanjeSklopnogUredaja.ON.opis}!"
+        }
+    }
 }
 
-enum class StanjeSklopnogUredaja {
-    ON, OFF
+enum class StanjeSklopnogUredaja(val opis: String) {
+ON("ukljucen"), OFF("iskljucen")
 }
+
+/*
+enum class TipSklopnogUredaja(val opis: String) {
+    PREKIDAC("Prekidac"), RASTAVLJAC("Rastavljac")
+}
+*/

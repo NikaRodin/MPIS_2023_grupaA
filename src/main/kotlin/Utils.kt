@@ -14,3 +14,11 @@ fun getColor(stanje: StanjeSklopnogUredaja): Color {
         StanjeSklopnogUredaja.OFF -> Color.RED
     }
 }
+
+fun checkAndToggle(glavniUredaj: SklopniUredaj, uvjet: StanjeSklopnogUredaja, vararg ostaliUredaji: SklopniUredaj): String? {
+    for (item in ostaliUredaji) {
+        if(item.stanje != uvjet) return item.javiGresku()
+    }
+    glavniUredaj.toggleStanje()
+    return null
+}

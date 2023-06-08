@@ -51,7 +51,7 @@ class MyPanel internal constructor() : JPanel() {
         addMouseListener(object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
                 p0?.let {
-//                    println("clicked x, y: ${p0.x}, ${p0.y}")
+                    println("clicked x, y: ${p0.x}, ${p0.y}")
                     val polja = listOf(dalPolje1, dalPolje2)
                     val clickError = polja.firstNotNullOfOrNull { it.click(p0.x, p0.y) }
                     if (clickError == null) {
