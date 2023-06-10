@@ -33,3 +33,17 @@ fun checkAndToggle(
     odabraniUredaj.toggleStanje()
     return null
 }
+
+fun tekstUpravljanjaDalekovodom(dalekovod: Dalekovod): String {
+    return when (dalekovod.provjeriStanje()) {
+        StanjeDalekovoda.ON -> "Iskljuci dalekovod"
+        StanjeDalekovoda.OFF -> "Ukljuci dalekovod"
+    }
+}
+
+fun tekstUpravljanjaPoljem(polje: Polje): String {
+    return when (polje.provjeriStanje()) {
+        StanjePolja.ON -> "Iskljuci ${polje.id}"
+        StanjePolja.OFF -> "Ukljuci ${polje.id}"
+    }
+}

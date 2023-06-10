@@ -13,15 +13,17 @@ class MyPanel internal constructor() : JPanel() {
     val dalPolje1: DalekovodnoPolje
     val dalPolje2: DalekovodnoPolje
     val mjernoPolje: MjernoPolje
+    val dalekovod: Dalekovod
 
     val mouseListener: MouseListener
 
     init {
 
         //image = new ImageIcon("sky.png").getImage();
-        this.preferredSize = Dimension(730, 500)
+        this.preferredSize = Dimension(730, 600)
 
         dalPolje1 = DalekovodnoPolje(
+            "dalekovodno polje DVA2",
             0, 0,
             listOf(
                 SabirnicaIRastavljac(
@@ -39,6 +41,7 @@ class MyPanel internal constructor() : JPanel() {
         )
 
         dalPolje2 = DalekovodnoPolje(
+            "dalekovodno polje DVA1",
             350, 0,
             listOf(
                 SabirnicaIRastavljac(
@@ -52,12 +55,15 @@ class MyPanel internal constructor() : JPanel() {
         )
 
         mjernoPolje = MjernoPolje(
+            "mjerno polje",
             350, 0,
             SabirnicaIRastavljac(
                 Sabirnica(250, 0, 125, 10),
                 Rastavljac("Rastavljac mjernog polja", StanjeSklopnogUredaja.OFF, Coordinate(285, 75))
             ),
         )
+
+        dalekovod = Dalekovod(dalPolje1, dalPolje2)
 
         mouseListener = object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {

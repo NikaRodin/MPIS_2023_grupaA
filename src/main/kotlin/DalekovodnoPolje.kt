@@ -1,11 +1,12 @@
 class DalekovodnoPolje(
+    id: String,
     x: Int,
     y: Int,
     val sabirniceIRastavljaci: List<SabirnicaIRastavljac>,
     val prekidac: Prekidac,
     val izlazniRastavljac: Rastavljac,
     val rastavljacUzemljenja: Rastavljac,
-) : Polje(x, y) {
+) : Polje(id, x, y) {
 
     override fun click(clickX: Int, clickY: Int): String? {
         val innerClickX = clickX - x
@@ -85,9 +86,20 @@ class DalekovodnoPolje(
         }
         return null
     }
+
+    override fun provjeriStanje(): StanjePolja {
+        return when(prekidac.stanje) {
+            StanjeSklopnogUredaja.ON -> StanjePolja.ON
+            else -> StanjePolja.OFF
+        }
+    }
 }
 
 class SabirnicaIRastavljac(
     val sabirnica: Sabirnica,
     val rastavljac: Rastavljac,
 )
+
+enum class StanjePolja(val opis: String) {
+    ON("ukljucen"), OFF("iskljucen")
+}

@@ -14,7 +14,7 @@ abstract class SklopniUredaj(
         if (stanje == StanjeSklopnogUredaja.OFF) {
             stanje = StanjeSklopnogUredaja.ON
         } else {
-            TODO("error?")
+            println("$id je vec ukljucen.")
         }
     }
 
@@ -22,7 +22,7 @@ abstract class SklopniUredaj(
         if (stanje == StanjeSklopnogUredaja.ON) {
             stanje = StanjeSklopnogUredaja.OFF
         } else {
-            TODO("error?")
+            println("$id je vec iskljucen.")
         }
     }
 }
