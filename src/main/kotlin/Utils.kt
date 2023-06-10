@@ -15,10 +15,21 @@ fun getColor(stanje: StanjeSklopnogUredaja): Color {
     }
 }
 
-fun checkAndToggle(glavniUredaj: SklopniUredaj, uvjet: StanjeSklopnogUredaja, vararg ostaliUredaji: SklopniUredaj): String? {
-    for (item in ostaliUredaji) {
-        if(item.stanje != uvjet) return item.javiGresku()
+fun getError(uredaj: SklopniUredaj): String{
+    return "${uredaj.id} mora biti " + when(uredaj.stanje) {
+        StanjeSklopnogUredaja.ON -> "${StanjeSklopnogUredaja.OFF.opis}!"
+        StanjeSklopnogUredaja.OFF -> "${StanjeSklopnogUredaja.ON.opis}!"
     }
-    glavniUredaj.toggleStanje()
+}
+
+fun checkAndToggle(
+    odabraniUredaj: SklopniUredaj,
+    uvjet: StanjeSklopnogUredaja,
+    vararg ostaliUredaji: SklopniUredaj
+): String? {
+    for (uredaj in ostaliUredaji) {
+        if (uredaj.stanje != uvjet) return getError(uredaj)
+    }
+    odabraniUredaj.toggleStanje()
     return null
 }

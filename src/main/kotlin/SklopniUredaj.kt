@@ -25,13 +25,6 @@ abstract class SklopniUredaj(
             TODO("error?")
         }
     }
-
-    fun javiGresku(): String{
-        return "$id mora biti " + when(stanje) {
-            StanjeSklopnogUredaja.ON -> "${StanjeSklopnogUredaja.OFF.opis}!"
-            StanjeSklopnogUredaja.OFF -> "${StanjeSklopnogUredaja.ON.opis}!"
-        }
-    }
 }
 
 enum class StanjeSklopnogUredaja(val opis: String) {
