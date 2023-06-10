@@ -65,6 +65,9 @@ class MyPanel internal constructor() : JPanel() {
 
         dalekovod = Dalekovod(dalPolje1, dalPolje2)
 
+        dalekovod.ukljuci()
+        mjernoPolje.ukljuci()
+
         mouseListener = object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
                 p0?.let {
@@ -125,7 +128,7 @@ class MyPanel internal constructor() : JPanel() {
 
             val r = sabirnicaIRastavljac.rastavljac
             g.color = getColor(r.stanje)
-            g.fillRect(r.coordinate.x, r.coordinate.y, RASTAVLJAC_SIZE, RASTAVLJAC_SIZE)
+            g.fillOval(r.coordinate.x, r.coordinate.y, RASTAVLJAC_SIZE, RASTAVLJAC_SIZE)
             g.color = defaultColor
 
             // connection
@@ -137,7 +140,7 @@ class MyPanel internal constructor() : JPanel() {
 
         // prekidac
         g.color = getColor(polje.prekidac.stanje)
-        g.fillOval(polje.prekidac.coordinate.x, polje.prekidac.coordinate.y, PREKIDAC_SIZE, PREKIDAC_SIZE)
+        g.fillRect(polje.prekidac.coordinate.x, polje.prekidac.coordinate.y, PREKIDAC_SIZE, PREKIDAC_SIZE)
         g.color = defaultColor
 
         var minMiddleX = Int.MAX_VALUE
@@ -168,11 +171,11 @@ class MyPanel internal constructor() : JPanel() {
 
         // Izlazni rastavljac
         g.color = getColor(polje.izlazniRastavljac.stanje)
-        g.fillRect(
+        g.fillOval(
             polje.izlazniRastavljac.coordinate.x,
             polje.izlazniRastavljac.coordinate.y,
-            PREKIDAC_SIZE,
-            PREKIDAC_SIZE
+            RASTAVLJAC_SIZE,
+            RASTAVLJAC_SIZE
         )
         g.color = defaultColor
 
@@ -187,7 +190,7 @@ class MyPanel internal constructor() : JPanel() {
 
         // Rastavljac uzemljenja
         g.color = getColor(polje.rastavljacUzemljenja.stanje)
-        g.fillRect(
+        g.fillOval(
             polje.rastavljacUzemljenja.coordinate.x,
             polje.rastavljacUzemljenja.coordinate.y,
             RASTAVLJAC_SIZE,
@@ -224,7 +227,7 @@ class MyPanel internal constructor() : JPanel() {
 
         val r = polje.sabirnicaIRastavljac.rastavljac
         g.color = getColor(r.stanje)
-        g.fillRect(r.coordinate.x, r.coordinate.y, RASTAVLJAC_SIZE, RASTAVLJAC_SIZE)
+        g.fillOval(r.coordinate.x, r.coordinate.y, RASTAVLJAC_SIZE, RASTAVLJAC_SIZE)
         g.color = defaultColor
 
         // connection

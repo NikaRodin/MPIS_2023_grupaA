@@ -11,7 +11,7 @@ class DalekovodnoPolje(
     override fun click(clickX: Int, clickY: Int): String? {
         val innerClickX = clickX - x
         val innerClickY = clickY - y
-        val sabirnickiRastavljac: SklopniUredaj? = ukljuceniSabirnickiRastavljac()
+        val sabirnickiRastavljac: Rastavljac? = ukljuceniSabirnickiRastavljac()
 
         if (inside(prekidac.coordinate, PREKIDAC_SIZE, innerClickX, innerClickY)) {
             return when (prekidac.stanje) {
@@ -80,7 +80,7 @@ class DalekovodnoPolje(
         return null
     }
 
-    fun ukljuceniSabirnickiRastavljac(): SklopniUredaj? {
+    fun ukljuceniSabirnickiRastavljac(): Rastavljac? {
         sabirniceIRastavljaci.forEach {
             if (it.rastavljac.stanje == StanjeSklopnogUredaja.ON) return it.rastavljac
         }
