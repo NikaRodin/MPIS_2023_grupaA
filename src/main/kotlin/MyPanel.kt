@@ -14,6 +14,8 @@ class MyPanel internal constructor() : JPanel() {
     val dalPolje2: DalekovodnoPolje
     val mjernoPolje: MjernoPolje
 
+    val mouseListener: MouseListener
+
     init {
 
         //image = new ImageIcon("sky.png").getImage();
@@ -57,7 +59,7 @@ class MyPanel internal constructor() : JPanel() {
             ),
         )
 
-        addMouseListener(object : MouseListener {
+        mouseListener = object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
                 p0?.let {
                     println("clicked x, y: ${p0.x}, ${p0.y}")
@@ -71,12 +73,11 @@ class MyPanel internal constructor() : JPanel() {
                     }
                 }
             }
-
             override fun mousePressed(p0: MouseEvent?) {}
             override fun mouseReleased(p0: MouseEvent?) {}
             override fun mouseEntered(p0: MouseEvent?) {}
             override fun mouseExited(p0: MouseEvent?) {}
-        })
+        }
     }
 
     override fun paint(g: Graphics) {
