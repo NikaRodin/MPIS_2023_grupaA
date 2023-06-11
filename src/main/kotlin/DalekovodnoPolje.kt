@@ -101,5 +101,5 @@ class SabirnicaIRastavljac(
 )
 
 enum class StanjePolja(val opis: String) {
-    ON("ukljucen"), OFF("iskljucen")
+    ON("ukljuceno"), OFF("iskljuceno")
 }

@@ -2,15 +2,20 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import javax.swing.JButton
 import javax.swing.JFrame
+import javax.swing.JTextField
 
 class MyFrame internal constructor() : JFrame() {
 
     private val panel: MyPanel = MyPanel()
+    private val infoBox: JTextField = JTextField("Welcome!")
     private val upravljacDalekovoda: JButton = JButton()
     private val upravljacMjernogPolja: JButton = JButton()
     private val mouseListener: MouseListener
 
     init {
+        infoBox.setBounds(420, 545, 300, 40)
+        infoBox.horizontalAlignment = JTextField.CENTER
+        infoBox.isEditable = false
 
         upravljacDalekovoda.setBounds(10, 500, 200, 40)
         upravljacDalekovoda.text = tekstUpravljanjaDalekovodom(panel.dalekovod)
@@ -18,6 +23,7 @@ class MyFrame internal constructor() : JFrame() {
         upravljacDalekovoda.addActionListener {
             panel.dalekovod.toggleStanje()
             upravljacDalekovoda.text = tekstUpravljanjaDalekovodom(panel.dalekovod)
+            infoBox.text = "Dalekovod ${panel.dalekovod.provjeriStanje().opis}!"
             repaint()
         }
 
@@ -27,12 +33,13 @@ class MyFrame internal constructor() : JFrame() {
         upravljacMjernogPolja.addActionListener {
             panel.mjernoPolje.toggleStanje()
             upravljacMjernogPolja.text = tekstUpravljanjaPoljem(panel.mjernoPolje)
+            infoBox.text = "Mjerno polje ${panel.mjernoPolje.provjeriStanje().opis}!"
             repaint()
         }
 
         mouseListener = object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
-                panel.mouseListener.mouseClicked(p0)
+                infoBox.text = panel.mouseClicked(p0)?:""
                 upravljacDalekovoda.text = tekstUpravljanjaDalekovodom(panel.dalekovod)
                 upravljacMjernogPolja.text = tekstUpravljanjaPoljem(panel.mjernoPolje)
                 revalidate()
@@ -45,6 +52,7 @@ class MyFrame internal constructor() : JFrame() {
         }
 
         defaultCloseOperation = EXIT_ON_CLOSE
+        contentPane.add(infoBox)
         contentPane.add(upravljacDalekovoda)
         contentPane.add(upravljacMjernogPolja)
         contentPane.add(panel)

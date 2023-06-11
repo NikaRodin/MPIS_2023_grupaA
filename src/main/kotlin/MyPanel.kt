@@ -1,6 +1,5 @@
 import java.awt.*
 import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
 import java.awt.geom.AffineTransform
 import java.awt.geom.Line2D
 import javax.swing.JPanel
@@ -14,8 +13,6 @@ class MyPanel internal constructor() : JPanel() {
     val dalPolje2: DalekovodnoPolje
     val mjernoPolje: MjernoPolje
     val dalekovod: Dalekovod
-
-    val mouseListener: MouseListener
 
     init {
 
@@ -67,26 +64,21 @@ class MyPanel internal constructor() : JPanel() {
 
         dalekovod.ukljuci()
         mjernoPolje.ukljuci()
+    }
 
-        mouseListener = object : MouseListener {
-            override fun mouseClicked(p0: MouseEvent?) {
-                p0?.let {
-                    println("clicked x, y: ${p0.x}, ${p0.y}")
-                    val polja = listOf(dalPolje1, dalPolje2, mjernoPolje)
-                    val clickError = polja.firstNotNullOfOrNull { it.click(p0.x, p0.y) }
-                    if (clickError == null) {
-                        revalidate()
-                        repaint()
-                    } else {
-                        println("Greška: $clickError")
-                    }
-                }
-            }
-            override fun mousePressed(p0: MouseEvent?) {}
-            override fun mouseReleased(p0: MouseEvent?) {}
-            override fun mouseEntered(p0: MouseEvent?) {}
-            override fun mouseExited(p0: MouseEvent?) {}
+    fun mouseClicked(p0: MouseEvent?): String? {
+        p0?.let {
+            println("clicked x, y: ${p0.x}, ${p0.y}")
+            val polja = listOf(dalPolje1, dalPolje2, mjernoPolje)
+            val clickError = polja.firstNotNullOfOrNull { it.click(p0.x, p0.y) }
+
+            if (clickError != null)
+                return clickError
+
+            revalidate()
+            repaint()
         }
+        return null
     }
 
     override fun paint(g: Graphics) {
