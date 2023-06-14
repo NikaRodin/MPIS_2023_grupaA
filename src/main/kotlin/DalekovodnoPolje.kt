@@ -1,12 +1,14 @@
 class DalekovodnoPolje(
     id: String,
+    eepId: String,
+    naponskiNivo: Float,
     x: Int,
     y: Int,
     val sabirniceIRastavljaci: List<SabirnicaIRastavljac>,
     val prekidac: Prekidac,
     val izlazniRastavljac: Rastavljac,
     val rastavljacUzemljenja: Rastavljac,
-) : Polje(id, x, y) {
+) : Polje(id, eepId, naponskiNivo, x, y) {
 
     override fun click(clickX: Int, clickY: Int): String? {
         val innerClickX = clickX - x
@@ -92,6 +94,21 @@ class DalekovodnoPolje(
             StanjeSklopnogUredaja.ON -> StanjePolja.ON
             else -> StanjePolja.OFF
         }
+    }
+
+    override fun getSignals(): List<Signal> {
+        val signals = ArrayList<Signal>()
+        signals.addAll(prekidac.getSignals(eepId, naponskiNivo.toInt().toString(), id))
+        for (rs in sabirniceIRastavljaci) {
+            signals.addAll(rs.rastavljac.getSignals(eepId, naponskiNivo.toInt().toString(), id))
+        }
+        signals.addAll(izlazniRastavljac.getSignals(eepId, naponskiNivo.toInt().toString(), id))
+        signals.addAll(rastavljacUzemljenja.getSignals(eepId, naponskiNivo.toInt().toString(), id))
+        // TODO: zastita distantna
+        // TODO: APU
+        // TODO: zaštita nadstrujna
+        // TODO: brojilo
+        return signals
     }
 }
 

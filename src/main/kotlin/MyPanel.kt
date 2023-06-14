@@ -20,7 +20,9 @@ class MyPanel internal constructor() : JPanel() {
         this.preferredSize = Dimension(730, 600)
 
         dalPolje1 = DalekovodnoPolje(
-            "dalekovodno polje DVA2",
+            "DV A2",
+            "TS A1",
+            110f,
             0, 0,
             listOf(
                 SabirnicaIRastavljac(
@@ -38,7 +40,9 @@ class MyPanel internal constructor() : JPanel() {
         )
 
         dalPolje2 = DalekovodnoPolje(
-            "dalekovodno polje DVA1",
+            "DV A1",
+            "TS A2",
+            110f,
             350, 0,
             listOf(
                 SabirnicaIRastavljac(
@@ -52,7 +56,9 @@ class MyPanel internal constructor() : JPanel() {
         )
 
         mjernoPolje = MjernoPolje(
-            "mjerno polje",
+            "MP",
+            "TS A2",
+            110f,
             350, 0,
             SabirnicaIRastavljac(
                 Sabirnica(250, 0, 125, 10),
