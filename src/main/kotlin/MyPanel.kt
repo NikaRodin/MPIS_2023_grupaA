@@ -62,7 +62,7 @@ class MyPanel internal constructor() : JPanel() {
 
         dalekovod = Dalekovod(dalPolje1, dalPolje2)
 
-        dalekovod.ukljuci()
+        dalekovod.ukljuci(::repaint, false)
         mjernoPolje.ukljuci()
     }
 

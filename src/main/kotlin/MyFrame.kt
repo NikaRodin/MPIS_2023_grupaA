@@ -21,7 +21,7 @@ class MyFrame internal constructor() : JFrame() {
         upravljacDalekovoda.text = tekstUpravljanjaDalekovodom(panel.dalekovod)
         upravljacDalekovoda.isFocusPainted = false
         upravljacDalekovoda.addActionListener {
-            panel.dalekovod.toggleStanje()
+            panel.dalekovod.toggleStanje(::repaint, true)
             upravljacDalekovoda.text = tekstUpravljanjaDalekovodom(panel.dalekovod)
             infoBox.text = "Dalekovod ${panel.dalekovod.provjeriStanje().opis}!"
             repaint()
