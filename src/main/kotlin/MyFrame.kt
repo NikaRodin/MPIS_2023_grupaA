@@ -1,10 +1,11 @@
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
-import javax.swing.JButton
-import javax.swing.JFrame
-import javax.swing.JTextField
+import javax.swing.*
+
 
 class MyFrame internal constructor() : JFrame() {
+
+    var updateSignaliText: (String) -> Unit = {}
 
     private val panel: MyPanel = MyPanel()
     private val infoBox: JTextField = JTextField("Welcome!")
@@ -12,7 +13,25 @@ class MyFrame internal constructor() : JFrame() {
     private val upravljacMjernogPolja: JButton = JButton()
     private val mouseListener: MouseListener
 
+    private val pokaziSveSignale: JButton = JButton()
+
     init {
+        mouseListener = object : MouseListener {
+            override fun mouseClicked(p0: MouseEvent?) {
+                infoBox.text = panel.mouseClicked(p0)?:""
+                upravljacDalekovoda.text = tekstUpravljanjaDalekovodom(panel.dalekovod)
+                upravljacMjernogPolja.text = tekstUpravljanjaPoljem(panel.mjernoPolje)
+                revalidate()
+                repaint()
+            }
+            override fun mousePressed(p0: MouseEvent?) {}
+            override fun mouseReleased(p0: MouseEvent?) {}
+            override fun mouseEntered(p0: MouseEvent?) {}
+            override fun mouseExited(p0: MouseEvent?) {}
+        }
+    }
+
+    fun init() {
         infoBox.setBounds(420, 545, 300, 40)
         infoBox.horizontalAlignment = JTextField.CENTER
         infoBox.isEditable = false
@@ -37,24 +56,18 @@ class MyFrame internal constructor() : JFrame() {
             repaint()
         }
 
-        mouseListener = object : MouseListener {
-            override fun mouseClicked(p0: MouseEvent?) {
-                infoBox.text = panel.mouseClicked(p0)?:""
-                upravljacDalekovoda.text = tekstUpravljanjaDalekovodom(panel.dalekovod)
-                upravljacMjernogPolja.text = tekstUpravljanjaPoljem(panel.mjernoPolje)
-                revalidate()
-                repaint()
-            }
-            override fun mousePressed(p0: MouseEvent?) {}
-            override fun mouseReleased(p0: MouseEvent?) {}
-            override fun mouseEntered(p0: MouseEvent?) {}
-            override fun mouseExited(p0: MouseEvent?) {}
+        pokaziSveSignale.setBounds(0, 600, 200, 40)
+        pokaziSveSignale.text = "Svi signali"
+        pokaziSveSignale.isFocusPainted = false
+        pokaziSveSignale.addActionListener {
+            updateSignaliText(SignalsProcessor().all(panel))
         }
 
         defaultCloseOperation = EXIT_ON_CLOSE
         contentPane.add(infoBox)
         contentPane.add(upravljacDalekovoda)
         contentPane.add(upravljacMjernogPolja)
+        contentPane.add(pokaziSveSignale)
         contentPane.add(panel)
         contentPane.addMouseListener(mouseListener)
         pack()
