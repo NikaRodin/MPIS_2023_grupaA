@@ -1,3 +1,4 @@
+import java.awt.Dimension
 import java.awt.Font
 import javax.swing.*
 
@@ -6,6 +7,7 @@ class ListaSignalaFrame : JFrame() {
     private val listeSignalaBox: JTextArea = JTextArea("")
 
     fun init() {
+        this.preferredSize = Dimension(1100, 800)
 
         listeSignalaBox.setBounds(0, 650, 730, 200)
         listeSignalaBox.isEditable = false

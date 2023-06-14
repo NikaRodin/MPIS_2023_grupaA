@@ -16,8 +16,7 @@ class MyPanel internal constructor() : JPanel() {
 
     init {
 
-        //image = new ImageIcon("sky.png").getImage();
-        this.preferredSize = Dimension(730, 600)
+        this.preferredSize = Dimension(730, 700)
 
         dalPolje1 = DalekovodnoPolje(
             "DV A2",
