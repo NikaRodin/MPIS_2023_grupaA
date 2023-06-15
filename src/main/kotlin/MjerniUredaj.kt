@@ -9,9 +9,9 @@ class MjerniUredaj(
     }
 }
 
-enum class TipMjernogUredaja(val mjernaJedinica: String) {
-    RADNA_SNAGA("MW"),
-    NAPON("kV"),
-    FREKVENCIJA("Hz"),
-    JALOVA_ENERGIJA("kVArh")
+enum class TipMjernogUredaja(val mjernaJedinica: String, val iconFileName: String) {
+    RADNA_SNAGA("MW", "radna_snaga.png"),
+    NAPON("kV", "napon.png"),
+    FREKVENCIJA("Hz", "frekvencija.png"),
+    JALOVA_ENERGIJA("kVArh", "jalova_energija.png")
 }

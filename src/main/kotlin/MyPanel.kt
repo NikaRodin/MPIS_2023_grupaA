@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.ImageIcon
-import javax.swing.JLabel
 import javax.swing.JPanel
 import kotlin.math.atan2
 import kotlin.math.max
@@ -20,14 +19,6 @@ class MyPanel internal constructor() : JPanel() {
     val dalPolje2: DalekovodnoPolje
     val mjernoPolje: MjernoPolje
     val dalekovod: Dalekovod
-
-    val frequencyImage: Image = ImageIcon("icons/frekvencija.png").image
-    val voltageImage: Image = ImageIcon("icons/napon.png").image
-    val powerImage: Image = ImageIcon("icons/radna_snaga.png").image
-    val energyImage: Image = ImageIcon("icons/jalova_energija.png").image
-
-    val myPicture: BufferedImage =
-        ImageIO.read(File("C:\\Users\\Korisnik\\IdeaProjects\\MPIS_2023_grupaA\\src\\main\\kotlin\\icons\\frekvencija.png"))
 
     init {
 
@@ -230,6 +221,7 @@ class MyPanel internal constructor() : JPanel() {
 
         //Mjerni uredaji
         for (mjerniUredaj in polje.mjerniUredaji) {
+            val icon = resourceGetter("poll.png")
             when(mjerniUredaj.tip){
                 TipMjernogUredaja.RADNA_SNAGA -> g.drawImage(myPicture, mjerniUredaj.coordinate.x, mjerniUredaj.coordinate.y, 90, 100, null)
                 TipMjernogUredaja.NAPON -> g.drawImage(myPicture, 0, 0, 90, 100, null)
