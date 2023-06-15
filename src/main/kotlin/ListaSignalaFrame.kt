@@ -11,11 +11,14 @@ class ListaSignalaFrame : JFrame() {
 
         listeSignalaBox.setBounds(0, 650, 730, 200)
         listeSignalaBox.isEditable = false
-        listeSignalaBox.setSize(400,400)
+        listeSignalaBox.setSize(400, 400)
         listeSignalaBox.font = Font(Font.MONOSPACED, Font.BOLD, 16)
 
-        val scroll = JScrollPane (listeSignalaBox,
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS)
+        val scroll = JScrollPane(
+            listeSignalaBox,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
+        )
         scroll.setBounds(100, 100, 200, 200)
 
         defaultCloseOperation = HIDE_ON_CLOSE

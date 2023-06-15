@@ -34,16 +34,23 @@ fun checkAndToggle(
     return null
 }
 
-fun tekstUpravljanjaDalekovodom(dalekovod: Dalekovod): String {
+fun dohvatiTekstUpravljanjaDalekovodom(dalekovod: Dalekovod): String {
     return when (dalekovod.provjeriStanje()) {
         StanjeDalekovoda.ON -> "Iskljuci dalekovod"
         StanjeDalekovoda.OFF -> "Ukljuci dalekovod"
     }
 }
 
-fun tekstUpravljanjaPoljem(polje: Polje): String {
+fun dohvatiTekstUpravljanjaPoljem(polje: Polje): String {
     return when (polje.provjeriStanje()) {
-        StanjePolja.ON -> "Iskljuci ${polje.id}"
-        StanjePolja.OFF -> "Ukljuci ${polje.id}"
+        StanjePolja.ON -> "Iskljuci ${polje.tip.opis} polje"
+        StanjePolja.OFF -> "Ukljuci ${polje.tip.opis} polje"
+    }
+}
+
+fun getLoadingText(dalekovod: Dalekovod): String {
+    return when (dalekovod.provjeriStanje()) {
+        StanjeDalekovoda.ON -> "Iskljucivanje u tijeku..."
+        StanjeDalekovoda.OFF -> "Ukljucivanje u tijeku..."
     }
 }

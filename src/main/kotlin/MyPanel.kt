@@ -135,7 +135,7 @@ class MyPanel internal constructor() : JPanel() {
             g.fillRect(rastavljacMiddle - LINE_WIDTH / 2, upY, LINE_WIDTH, downY - upY)
         }
 
-        // prekidac
+        // Prekidac
         g.color = getColor(polje.prekidac.stanje)
         g.fillRect(polje.prekidac.coordinate.x, polje.prekidac.coordinate.y, PREKIDAC_SIZE, PREKIDAC_SIZE)
         g.color = defaultColor

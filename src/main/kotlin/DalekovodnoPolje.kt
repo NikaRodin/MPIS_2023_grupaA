@@ -8,12 +8,13 @@ class DalekovodnoPolje(
     val prekidac: Prekidac,
     val izlazniRastavljac: Rastavljac,
     val rastavljacUzemljenja: Rastavljac,
-) : Polje(id, eepId, naponskiNivo, x, y) {
+    tip: TipPolja = TipPolja.DVP
+) : Polje(id, eepId, naponskiNivo, x, y, tip) {
 
     override fun click(clickX: Int, clickY: Int): String? {
         val innerClickX = clickX - x
         val innerClickY = clickY - y
-        val sabirnickiRastavljac: Rastavljac? = ukljuceniSabirnickiRastavljac()
+        val ukljuceniSabRast: Rastavljac? = pronadiUkljuceniSabirnickiRastavljac()
 
         if (inside(prekidac.coordinate, PREKIDAC_SIZE, innerClickX, innerClickY)) {
             return when (prekidac.stanje) {
@@ -22,8 +23,12 @@ class DalekovodnoPolje(
                     null
                 }
                 StanjeSklopnogUredaja.OFF -> {
-                    when (sabirnickiRastavljac) {
-                        null -> "Barem jedan sabirnicki rastavljac mora biti ukljucen!"
+                    when (ukljuceniSabRast) {
+                        null -> {
+                            val hit = "abirnicki rastavljac mora biti ukljucen!"
+                            if (sabirniceIRastavljaci.size > 1) "Barem jedan s$hit"
+                            else "S$hit"
+                        }
                         else -> checkAndToggle(prekidac, StanjeSklopnogUredaja.ON, izlazniRastavljac)
                     }
                 }
@@ -45,14 +50,14 @@ class DalekovodnoPolje(
                     checkAndToggle(rastavljacUzemljenja, StanjeSklopnogUredaja.OFF, prekidac)
                 }
                 StanjeSklopnogUredaja.OFF -> {
-                    when (sabirnickiRastavljac) {
+                    when (ukljuceniSabRast) {
                         null -> checkAndToggle(
                             rastavljacUzemljenja,
                             StanjeSklopnogUredaja.OFF,
                             prekidac,
                             izlazniRastavljac
                         )
-                        else -> getError(sabirnickiRastavljac)
+                        else -> getError(ukljuceniSabRast)
                     }
                 }
             }
@@ -64,14 +69,14 @@ class DalekovodnoPolje(
                             checkAndToggle(it.rastavljac, StanjeSklopnogUredaja.OFF, prekidac)
                         }
                         StanjeSklopnogUredaja.OFF -> {
-                            when (sabirnickiRastavljac) {
+                            when (ukljuceniSabRast) {
                                 null -> checkAndToggle(
                                     it.rastavljac,
                                     StanjeSklopnogUredaja.OFF,
                                     prekidac,
                                     rastavljacUzemljenja
                                 )
-                                else -> getError(sabirnickiRastavljac)
+                                else -> getError(ukljuceniSabRast)
                             }
                         }
                     }
@@ -82,7 +87,7 @@ class DalekovodnoPolje(
         return null
     }
 
-    fun ukljuceniSabirnickiRastavljac(): Rastavljac? {
+    fun pronadiUkljuceniSabirnickiRastavljac(): Rastavljac? {
         sabirniceIRastavljaci.forEach {
             if (it.rastavljac.stanje == StanjeSklopnogUredaja.ON) return it.rastavljac
         }
@@ -90,7 +95,7 @@ class DalekovodnoPolje(
     }
 
     override fun provjeriStanje(): StanjePolja {
-        return when(prekidac.stanje) {
+        return when (prekidac.stanje) {
             StanjeSklopnogUredaja.ON -> StanjePolja.ON
             else -> StanjePolja.OFF
         }
@@ -116,7 +121,3 @@ class SabirnicaIRastavljac(
     val sabirnica: Sabirnica,
     val rastavljac: Rastavljac,
 )
-
-enum class StanjePolja(val opis: String) {
-    ON("ukljuceno"), OFF("iskljuceno")
-}

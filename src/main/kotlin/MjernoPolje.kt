@@ -4,8 +4,9 @@ class MjernoPolje(
     naponskiNivo: Float,
     x: Int,
     y: Int,
-    val sabirnicaIRastavljac: SabirnicaIRastavljac
-): Polje(id, eepId, naponskiNivo, x, y) {
+    val sabirnicaIRastavljac: SabirnicaIRastavljac,
+    tip: TipPolja = TipPolja.MP
+): Polje(id, eepId, naponskiNivo, x, y, tip) {
 
     override fun click(clickX: Int, clickY: Int): String? {
         val innerClickX = clickX - x
