@@ -30,7 +30,6 @@ data class Signal(
         var index = 0
         for (v in values) {
             sb.append(v)
-            sb.append(", ")
             sb.append(nSpaces((eachItemCharWidthPrefixSum[index]) - sb.length))
             index++
         }
