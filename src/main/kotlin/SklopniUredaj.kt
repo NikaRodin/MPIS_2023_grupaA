@@ -8,6 +8,8 @@ abstract class SklopniUredaj(
         when (stanje) {
             StanjeSklopnogUredaja.ON -> iskljuci()
             StanjeSklopnogUredaja.OFF -> ukljuci()
+            StanjeSklopnogUredaja.MIDDLE -> TODO()
+            StanjeSklopnogUredaja.ERROR -> TODO()
         }
     }
 
@@ -16,7 +18,7 @@ abstract class SklopniUredaj(
             stanje = StanjeSklopnogUredaja.ON
             komanda = KomandaSklopnogUredaja.ON
         } else {
-            println("$id je vec ukljucen.")
+            println("$id se ne može uključiti. On je u stanju ${stanje.opis}.")
         }
     }
 
@@ -25,13 +27,28 @@ abstract class SklopniUredaj(
             stanje = StanjeSklopnogUredaja.OFF
             komanda = KomandaSklopnogUredaja.OFF
         } else {
-            println("$id je vec iskljucen.")
+            println("$id se ne može isključiti. On je u stanju ${stanje.opis}.")
         }
+    }
+
+    open fun getSignals(eep: String, napon: String, polje: String): List<Signal> {
+
+        val signals = ArrayList<Signal>()
+
+        for (kom in KomandaSklopnogUredaja.values()) {
+            signals.add(Signal(eep, napon, polje, id, "komanda", kom.opis, kom == komanda))
+        }
+
+        for (st in StanjeSklopnogUredaja.values()) {
+            signals.add(Signal(eep, napon, polje, id, "stanje", st.opis, st == stanje))
+        }
+
+        return signals
     }
 }
 
 enum class StanjeSklopnogUredaja(val opis: String) {
-    ON("ukljucen"), OFF("iskljucen")
+    MIDDLE("međupoložaj"), OFF("iskljucen"), ON("ukljucen"), ERROR("kvar signalizacije")
 }
 
 enum class KomandaSklopnogUredaja(val opis: String) {

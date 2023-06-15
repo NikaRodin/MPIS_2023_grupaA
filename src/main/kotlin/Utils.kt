@@ -12,6 +12,8 @@ fun getColor(stanje: StanjeSklopnogUredaja): Color {
     return when (stanje) {
         StanjeSklopnogUredaja.ON -> Color.GREEN
         StanjeSklopnogUredaja.OFF -> Color.RED
+        StanjeSklopnogUredaja.MIDDLE -> TODO()
+        StanjeSklopnogUredaja.ERROR -> TODO()
     }
 }
 
@@ -19,6 +21,8 @@ fun getError(uredaj: SklopniUredaj): String{
     return "${uredaj.id} mora biti " + when(uredaj.stanje) {
         StanjeSklopnogUredaja.ON -> "${StanjeSklopnogUredaja.OFF.opis}!"
         StanjeSklopnogUredaja.OFF -> "${StanjeSklopnogUredaja.ON.opis}!"
+        StanjeSklopnogUredaja.MIDDLE -> TODO()
+        StanjeSklopnogUredaja.ERROR -> TODO()
     }
 }
 

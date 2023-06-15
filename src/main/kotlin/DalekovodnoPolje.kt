@@ -32,6 +32,8 @@ class DalekovodnoPolje(
                         else -> checkAndToggle(prekidac, StanjeSklopnogUredaja.ON, izlazniRastavljac)
                     }
                 }
+                StanjeSklopnogUredaja.MIDDLE -> TODO()
+                StanjeSklopnogUredaja.ERROR -> TODO()
             }
 
         } else if (inside(izlazniRastavljac.coordinate, RASTAVLJAC_SIZE, innerClickX, innerClickY)) {
@@ -42,6 +44,8 @@ class DalekovodnoPolje(
                 StanjeSklopnogUredaja.OFF -> {
                     checkAndToggle(izlazniRastavljac, StanjeSklopnogUredaja.OFF, prekidac, rastavljacUzemljenja)
                 }
+                StanjeSklopnogUredaja.MIDDLE -> TODO()
+                StanjeSklopnogUredaja.ERROR -> TODO()
             }
 
         } else if (inside(rastavljacUzemljenja.coordinate, RASTAVLJAC_SIZE, innerClickX, innerClickY)) {
@@ -60,6 +64,8 @@ class DalekovodnoPolje(
                         else -> getError(ukljuceniSabRast)
                     }
                 }
+                StanjeSklopnogUredaja.MIDDLE -> TODO()
+                StanjeSklopnogUredaja.ERROR -> TODO()
             }
         } else {
             sabirniceIRastavljaci.forEach {
@@ -79,6 +85,8 @@ class DalekovodnoPolje(
                                 else -> getError(ukljuceniSabRast)
                             }
                         }
+                        StanjeSklopnogUredaja.MIDDLE -> TODO()
+                        StanjeSklopnogUredaja.ERROR -> TODO()
                     }
                 }
             }
@@ -112,6 +120,7 @@ class DalekovodnoPolje(
         // TODO: zastita distantna
         // TODO: APU
         // TODO: zaštita nadstrujna
+        // TODO: mjerni pretvornik
         // TODO: brojilo
         return signals
     }
