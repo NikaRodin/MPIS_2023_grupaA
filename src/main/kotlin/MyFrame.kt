@@ -7,7 +7,7 @@ class MyFrame internal constructor() : JFrame() {
     var updateSignals: (List<Signal>) -> Unit = {}
     var showSignals: () -> Unit = {}
 
-    private val panel: MyPanel = MyPanel()
+    private val panel: MyPanel = MyPanel { name -> ImageIcon(this.javaClass.getResource(name)).image }
     private val infoBox: JTextField = JTextField("Welcome!")
     private val mouseListener: MouseListener
 

@@ -7,7 +7,9 @@ import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
 
-class MyPanel internal constructor() : JPanel() {
+class MyPanel(
+    private val resourceGetter: (String) -> Image
+) : JPanel() {
 
     var onRepaint: () -> Unit = {}
 
@@ -15,6 +17,8 @@ class MyPanel internal constructor() : JPanel() {
     val dalPolje2: DalekovodnoPolje
     val mjernoPolje: MjernoPolje
     val dalekovod: Dalekovod
+
+    val image = resourceGetter("poll.png")
 
     init {
 
@@ -98,6 +102,7 @@ class MyPanel internal constructor() : JPanel() {
         drawPolje(g2d, dalPolje1)
         drawPolje(g2d, dalPolje2)
         drawPolje(g2d, mjernoPolje)
+        g2d.drawImage(image, 600, 150, 200, 100, null)
     }
 
     private fun drawPolje(g2d: Graphics2D, polje: Polje): String? {
