@@ -175,7 +175,7 @@ class ListaSignalaFrame : JFrame() {
             val painter = DefaultHighlighter.DefaultHighlightPainter(color)
             listeSignalaBox.highlighter.addHighlight(startIndex, endIndex, painter)
         } catch (ble: BadLocationException) {
-            ble.printStackTrace()
+//            ble.printStackTrace()
         }
     }
 
