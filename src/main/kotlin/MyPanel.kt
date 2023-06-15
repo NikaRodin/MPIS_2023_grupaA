@@ -9,6 +9,8 @@ import kotlin.math.min
 
 class MyPanel internal constructor() : JPanel() {
 
+    var onRepaint: () -> Unit = {}
+
     val dalPolje1: DalekovodnoPolje
     val dalPolje2: DalekovodnoPolje
     val mjernoPolje: MjernoPolje
@@ -68,14 +70,14 @@ class MyPanel internal constructor() : JPanel() {
         dalekovod = Dalekovod(dalPolje1, dalPolje2)
 
         dalekovod.ukljuci(::repaint, false)
-        mjernoPolje.ukljuci()
+        mjernoPolje.ukljuciImmediate()
     }
 
     fun mouseClicked(p0: MouseEvent?): String? {
         p0?.let {
             println("clicked x, y: ${p0.x}, ${p0.y}")
             val polja = listOf(dalPolje1, dalPolje2, mjernoPolje)
-            val clickError = polja.firstNotNullOfOrNull { it.click(p0.x, p0.y) }
+            val clickError = polja.firstNotNullOfOrNull { it.click(p0.x, p0.y, ::repaint, true) }
 
             if (clickError != null)
                 return clickError
@@ -248,5 +250,10 @@ class MyPanel internal constructor() : JPanel() {
         g.transform = tx
         g.fill(arrowHead)
         g.dispose()
+    }
+
+    override fun repaint() {
+        super.repaint()
+        onRepaint?.invoke()
     }
 }

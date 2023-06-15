@@ -12,7 +12,7 @@ fun getColor(stanje: StanjeSklopnogUredaja): Color {
     return when (stanje) {
         StanjeSklopnogUredaja.ON -> Color.GREEN
         StanjeSklopnogUredaja.OFF -> Color.RED
-        StanjeSklopnogUredaja.MIDDLE -> TODO()
+        StanjeSklopnogUredaja.MIDDLE -> Color.ORANGE
         StanjeSklopnogUredaja.ERROR -> TODO()
     }
 }
@@ -21,20 +21,22 @@ fun getError(uredaj: SklopniUredaj): String{
     return "${uredaj.id} mora biti " + when(uredaj.stanje) {
         StanjeSklopnogUredaja.ON -> "${StanjeSklopnogUredaja.OFF.opis}!"
         StanjeSklopnogUredaja.OFF -> "${StanjeSklopnogUredaja.ON.opis}!"
-        StanjeSklopnogUredaja.MIDDLE -> TODO()
+        StanjeSklopnogUredaja.MIDDLE -> "ukljucen ili iskljucen"
         StanjeSklopnogUredaja.ERROR -> TODO()
     }
 }
 
 fun checkAndToggle(
+    repaint: () -> Unit,
+    wait: Boolean,
     odabraniUredaj: SklopniUredaj,
     uvjet: StanjeSklopnogUredaja,
-    vararg ostaliUredaji: SklopniUredaj
+    vararg ostaliUredaji: SklopniUredaj,
 ): String? {
     for (uredaj in ostaliUredaji) {
         if (uredaj.stanje != uvjet) return getError(uredaj)
     }
-    odabraniUredaj.toggleStanje()
+    odabraniUredaj.toggleStanje(repaint, wait)
     return null
 }
 
@@ -56,5 +58,13 @@ fun getLoadingText(dalekovod: Dalekovod): String {
     return when (dalekovod.provjeriStanje()) {
         StanjeDalekovoda.ON -> "Iskljucivanje u tijeku..."
         StanjeDalekovoda.OFF -> "Ukljucivanje u tijeku..."
+    }
+}
+
+fun sleep(delayMs: Long) {
+    try {
+        Thread.sleep(delayMs)
+    } catch (e: Exception) {
+        println(e.message)
     }
 }

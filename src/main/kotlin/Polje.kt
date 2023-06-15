@@ -7,7 +7,7 @@ abstract class Polje(
     val tip: TipPolja
 ) {
     // Returns an error or null if there is no error
-    abstract fun click(clickX: Int, clickY: Int): String?
+    abstract fun click(clickX: Int, clickY: Int, repaint: () -> Unit, wait: Boolean): String?
     abstract fun provjeriStanje(): StanjePolja
     abstract fun getSignals(): List<Signal>
 }

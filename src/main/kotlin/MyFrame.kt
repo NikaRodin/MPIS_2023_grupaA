@@ -18,11 +18,13 @@ class MyFrame internal constructor() : JFrame() {
     init {
         mouseListener = object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
-                infoBox.text = panel.mouseClicked(p0)?:""
-                upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
-                upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
-                revalidate()
-                repaint()
+                Thread {
+                    infoBox.text = panel.mouseClicked(p0)?:""
+                    upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
+                    upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
+                    revalidate()
+                    repaint()
+                }.start()
             }
             override fun mousePressed(p0: MouseEvent?) {}
             override fun mouseReleased(p0: MouseEvent?) {}
@@ -55,11 +57,12 @@ class MyFrame internal constructor() : JFrame() {
         upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
         upravljacMjernogPolja.isFocusPainted = false
         upravljacMjernogPolja.addActionListener {
-            panel.mjernoPolje.toggleStanje()
-            upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
-            infoBox.text = "Mjerno polje ${panel.mjernoPolje.provjeriStanje().opis}!"
-            repaint()
-
+            Thread{
+                panel.mjernoPolje.toggleStanje(::repaint, true)
+                upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
+                infoBox.text = "Mjerno polje ${panel.mjernoPolje.provjeriStanje().opis}!"
+                repaint()
+            }.start()
         }
 
         pokaziSveSignale.setBounds(10, 590, 200, 40)
@@ -80,6 +83,8 @@ class MyFrame internal constructor() : JFrame() {
         pack()
         setLocationRelativeTo(null)
         this.isVisible = true
+
+        panel.onRepaint = { updateSignals() }
     }
 
     override fun repaint() {

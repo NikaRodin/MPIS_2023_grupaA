@@ -16,101 +16,89 @@ class Dalekovod(
         val odabraniSabRast2: Rastavljac =
             dalPolje2.pronadiUkljuceniSabirnickiRastavljac() ?: dalPolje2.sabirniceIRastavljaci.first().rastavljac
 
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        var doneCounter = 0
+
+        if (wait) sleep(DELAY_MS)
 
         println("=> Isključiti rastavljače za uzemljenje s obje strane")
-        dalPolje1.rastavljacUzemljenja.iskljuci()
-        dalPolje2.rastavljacUzemljenja.iskljuci()
+        doneCounter = 0
+        Thread { dalPolje1.rastavljacUzemljenja.iskljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje2.rastavljacUzemljenja.iskljuci(repaint, wait); doneCounter++ }.start()
+        while (doneCounter != 2) sleep(10)
         repaint()
 
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        if (wait) sleep(DELAY_MS)
 
         println("=> Uključiti sabirničke rastavljače s obje strane")
-        dalPolje1.sabirniceIRastavljaci.forEach {
-            if (it.rastavljac == odabraniSabRast1) it.rastavljac.ukljuci()
-            else it.rastavljac.iskljuci()
-        }
-        dalPolje2.sabirniceIRastavljaci.forEach {
-            if (it.rastavljac == odabraniSabRast2) it.rastavljac.ukljuci()
-            else it.rastavljac.iskljuci()
-        }
+        doneCounter = 0
+        Thread {
+            dalPolje1.sabirniceIRastavljaci.forEach {
+                if (it.rastavljac == odabraniSabRast1) it.rastavljac.ukljuci(repaint, wait)
+                else it.rastavljac.iskljuci(repaint, wait)
+            }
+            doneCounter++
+        }.start()
+        Thread {
+            dalPolje2.sabirniceIRastavljaci.forEach {
+                if (it.rastavljac == odabraniSabRast2) it.rastavljac.ukljuci(repaint, wait)
+                else it.rastavljac.iskljuci(repaint, wait)
+            }
+            doneCounter++
+        }.start()
+        while (doneCounter != 2) sleep(10)
         repaint()
 
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        if (wait) sleep(DELAY_MS)
 
         println("=> Uključiti linijske rastavljače s obje strane")
-        dalPolje1.izlazniRastavljac.ukljuci()
-        dalPolje2.izlazniRastavljac.ukljuci()
+        doneCounter = 0
+        Thread { dalPolje1.izlazniRastavljac.ukljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje2.izlazniRastavljac.ukljuci(repaint, wait); doneCounter++ }.start()
+        while (doneCounter != 2) sleep(10)
         repaint()
 
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        if (wait) sleep(DELAY_MS)
 
         println("=> Uključiti prekidače s obje strane")
-        dalPolje1.prekidac.ukljuci()
-        dalPolje2.prekidac.ukljuci()
+        doneCounter = 0
+        Thread { dalPolje1.prekidac.ukljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje2.prekidac.ukljuci(repaint, wait); doneCounter++ }.start()
+        while (doneCounter != 2) sleep(10)
+
         repaint()
     }
 
     fun iskljuci(repaint: () -> Unit, wait: Boolean) {
 
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        var doneCounter = 0
+
+        if (wait) sleep(DELAY_MS)
 
         println("=> Isključiti prekidače s obje strane")
-        dalPolje1.prekidac.iskljuci()
-        dalPolje2.prekidac.iskljuci()
+        doneCounter = 0
+        Thread { dalPolje1.prekidac.iskljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje2.prekidac.iskljuci(repaint, wait); doneCounter++ }.start()
+        while (doneCounter != 2) sleep(10)
         repaint()
 
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        if (wait) sleep(DELAY_MS)
 
-        println("=> Isključiti sabirničke rastavljače s obje strane")
-        dalPolje1.pronadiUkljuceniSabirnickiRastavljac()?.iskljuci()
-        dalPolje2.pronadiUkljuceniSabirnickiRastavljac()?.iskljuci()
+        println("=> Isključiti sabirničke i linijske rastavljače s obje strane")
+        doneCounter = 0
+        Thread { dalPolje1.pronadiUkljuceniSabirnickiRastavljac()?.iskljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje2.pronadiUkljuceniSabirnickiRastavljac()?.iskljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje1.izlazniRastavljac.iskljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje2.izlazniRastavljac.iskljuci(repaint, wait); doneCounter++ }.start()
+        while (doneCounter != 4) sleep(10)
         repaint()
 
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
-
-        println("=> Isključiti sabirničke rastavljače s obje strane")
-        dalPolje1.izlazniRastavljac.iskljuci()
-        dalPolje2.izlazniRastavljac.iskljuci()
-        repaint()
-
-        try {
-            if (wait) Thread.sleep(DELAY_MS)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        if (wait) sleep(DELAY_MS)
 
         println("=> Uključiti rastavljače za uzemljenje na obje strane")
-        dalPolje1.rastavljacUzemljenja.ukljuci()
-        dalPolje2.rastavljacUzemljenja.ukljuci()
+        doneCounter = 0
+        Thread { dalPolje1.rastavljacUzemljenja.ukljuci(repaint, wait); doneCounter++ }.start()
+        Thread { dalPolje2.rastavljacUzemljenja.ukljuci(repaint, wait); doneCounter++ }.start()
+        while (doneCounter != 2) sleep(10)
         repaint()
     }
 

@@ -4,28 +4,50 @@ abstract class SklopniUredaj(
     var komanda: KomandaSklopnogUredaja = KomandaSklopnogUredaja.OFF,
 ) {
 
-    fun toggleStanje() {
+    fun toggleStanje(repaint: () -> Unit, wait: Boolean) {
         when (stanje) {
-            StanjeSklopnogUredaja.ON -> iskljuci()
-            StanjeSklopnogUredaja.OFF -> ukljuci()
+            StanjeSklopnogUredaja.ON -> iskljuci(repaint, wait)
+            StanjeSklopnogUredaja.OFF -> ukljuci(repaint, wait)
             StanjeSklopnogUredaja.MIDDLE -> TODO()
             StanjeSklopnogUredaja.ERROR -> TODO()
         }
     }
 
-    fun ukljuci() {
+    fun ukljuci(repaint: () -> Unit, wait: Boolean) {
         if (stanje == StanjeSklopnogUredaja.OFF) {
-            stanje = StanjeSklopnogUredaja.ON
             komanda = KomandaSklopnogUredaja.ON
+
+            if (wait) {
+                stanje = StanjeSklopnogUredaja.MIDDLE
+                repaint()
+
+                try {
+                    Thread.sleep(1000)
+                } catch (ignored: Exception) {}
+            }
+
+            stanje = StanjeSklopnogUredaja.ON
+            repaint()
         } else {
             println("$id se ne može uključiti. On je u stanju ${stanje.opis}.")
         }
     }
 
-    fun iskljuci() {
+    fun iskljuci(repaint: () -> Unit, wait: Boolean) {
         if (stanje == StanjeSklopnogUredaja.ON) {
-            stanje = StanjeSklopnogUredaja.OFF
             komanda = KomandaSklopnogUredaja.OFF
+
+            if (wait) {
+                stanje = StanjeSklopnogUredaja.MIDDLE
+                repaint()
+
+                try {
+                    Thread.sleep(1000)
+                } catch (ignored: Exception) {}
+            }
+
+            stanje = StanjeSklopnogUredaja.OFF
+            repaint()
         } else {
             println("$id se ne može isključiti. On je u stanju ${stanje.opis}.")
         }
