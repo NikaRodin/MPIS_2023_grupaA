@@ -4,9 +4,7 @@ import java.awt.Font
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
-import javax.swing.text.BadLocationException
 import javax.swing.text.DefaultHighlighter
-
 
 enum class FilterMode(
     val buttonText: String,
@@ -174,8 +172,8 @@ class ListaSignalaFrame : JFrame() {
             val endIndex: Int = listeSignalaBox.getLineEndOffset(row)
             val painter = DefaultHighlighter.DefaultHighlightPainter(color)
             listeSignalaBox.highlighter.addHighlight(startIndex, endIndex, painter)
-        } catch (ble: BadLocationException) {
-//            ble.printStackTrace()
+        } catch (ignored: Exception) {
+
         }
     }
 
