@@ -84,7 +84,7 @@ class MyFrame internal constructor() : JFrame() {
         setLocationRelativeTo(null)
         this.isVisible = true
 
-        panel.onRepaint = { updateSignals() }
+        panel.onRepaint = { repaint() }
     }
 
     override fun repaint() {
