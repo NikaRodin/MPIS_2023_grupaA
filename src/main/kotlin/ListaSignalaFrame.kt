@@ -75,6 +75,7 @@ class ListaSignalaFrame : JFrame() {
         this.isVisible = false
     }
 
+    @Synchronized
     fun update(allSignals: List<Signal>) {
         this.allSignals = allSignals
 
@@ -83,13 +84,17 @@ class ListaSignalaFrame : JFrame() {
 
         val filteredSignals = filterSignals(allSignals)
 
-        listeSignalaBox.text = toString(filteredSignals)
-        highlighRow(0, Color.YELLOW)
+        listeSignalaBox.highlighter.removeAllHighlights()
+        val text = toString(filteredSignals)
+        listeSignalaBox.text = text
+        revalidate()
+        repaint()
+        highlighRow(text, 0, Color.YELLOW)
 
         if (filterMode.highlightActive) {
             filteredSignals.forEachIndexed { index, signal ->
                 if (signal.isActive) {
-                    highlighRow(index+1, Color.GREEN)
+                    highlighRow(text, index+1, Color.GREEN)
                 }
             }
         }
@@ -166,10 +171,15 @@ class ListaSignalaFrame : JFrame() {
         }
     }
 
-    private fun highlighRow(row: Int, color: Color) {
+    private fun highlighRow(text: String, row: Int, color: Color) {
         try {
-            val startIndex: Int = listeSignalaBox.getLineStartOffset(row)
-            val endIndex: Int = listeSignalaBox.getLineEndOffset(row)
+            val startIndex: Int
+            if (row == 0) {
+                startIndex = 0
+            } else {
+                startIndex = text.mapIndexed { index, ch -> Pair(index, ch) }.filter { it.second == '\n' }[row-1].first + 1
+            }
+            val endIndex: Int = text.mapIndexed { index, ch -> Pair(index, ch) }.filter { it.second == '\n' }[row].first
             val painter = DefaultHighlighter.DefaultHighlightPainter(color)
             listeSignalaBox.highlighter.addHighlight(startIndex, endIndex, painter)
         } catch (ignored: Exception) {
