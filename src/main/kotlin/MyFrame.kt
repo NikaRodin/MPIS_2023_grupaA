@@ -2,10 +2,10 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import javax.swing.*
 
-
 class MyFrame internal constructor() : JFrame() {
 
-    var updateSignaliText: (String) -> Unit = {}
+    var updateSignals: (List<Signal>) -> Unit = {}
+    var showSignals: () -> Unit = {}
 
     private val panel: MyPanel = MyPanel()
     private val infoBox: JTextField = JTextField("Welcome!")
@@ -66,7 +66,8 @@ class MyFrame internal constructor() : JFrame() {
         pokaziSveSignale.text = "Svi signali"
         pokaziSveSignale.isFocusPainted = false
         pokaziSveSignale.addActionListener {
-            updateSignaliText(SignalsProcessor().all(panel))
+            updateSignals()
+            showSignals()
         }
 
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -79,5 +80,14 @@ class MyFrame internal constructor() : JFrame() {
         pack()
         setLocationRelativeTo(null)
         this.isVisible = true
+    }
+
+    override fun repaint() {
+        super.repaint()
+        updateSignals()
+    }
+
+    private fun updateSignals() {
+        updateSignals(SignalsProcessor().getAllSignals(panel))
     }
 }

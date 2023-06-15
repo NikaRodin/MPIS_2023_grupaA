@@ -2,8 +2,10 @@ fun main() {
     println("Starting!")
     val mainFrame = MyFrame()
     val listaSignalaFrame = ListaSignalaFrame()
-    mainFrame.updateSignaliText = {
-        listaSignalaFrame.updateText(it)
+    mainFrame.updateSignals = {
+        listaSignalaFrame.update(it)
+    }
+    mainFrame.showSignals = {
         listaSignalaFrame.isVisible = true
     }
     Thread {
