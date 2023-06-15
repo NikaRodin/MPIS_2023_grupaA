@@ -8,6 +8,7 @@ class DalekovodnoPolje(
     val prekidac: Prekidac,
     val izlazniRastavljac: Rastavljac,
     val rastavljacUzemljenja: Rastavljac,
+    val mjerniUredaji: List<MjerniUredaj>,
     tip: TipPolja = TipPolja.DVP
 ) : Polje(id, eepId, naponskiNivo, x, y, tip) {
 

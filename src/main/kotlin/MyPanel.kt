@@ -2,6 +2,11 @@ import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.geom.AffineTransform
 import java.awt.geom.Line2D
+import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
+import javax.swing.ImageIcon
+import javax.swing.JLabel
 import javax.swing.JPanel
 import kotlin.math.atan2
 import kotlin.math.max
@@ -15,6 +20,14 @@ class MyPanel internal constructor() : JPanel() {
     val dalPolje2: DalekovodnoPolje
     val mjernoPolje: MjernoPolje
     val dalekovod: Dalekovod
+
+    val frequencyImage: Image = ImageIcon("icons/frekvencija.png").image
+    val voltageImage: Image = ImageIcon("icons/napon.png").image
+    val powerImage: Image = ImageIcon("icons/radna_snaga.png").image
+    val energyImage: Image = ImageIcon("icons/jalova_energija.png").image
+
+    val myPicture: BufferedImage =
+        ImageIO.read(File("C:\\Users\\Korisnik\\IdeaProjects\\MPIS_2023_grupaA\\src\\main\\kotlin\\icons\\frekvencija.png"))
 
     init {
 
@@ -38,6 +51,10 @@ class MyPanel internal constructor() : JPanel() {
             Prekidac("Prekidac", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
             Rastavljac("Izlazni rastavljac", StanjeSklopnogUredaja.OFF, Coordinate(100, 350)),
             Rastavljac("Rastavljac uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 275)),
+            listOf(
+                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.RADNA_SNAGA, 10F),
+                MjerniUredaj("Brojilo", TipMjernogUredaja.JALOVA_ENERGIJA, 2F)
+            )
         )
 
         dalPolje2 = DalekovodnoPolje(
@@ -54,6 +71,10 @@ class MyPanel internal constructor() : JPanel() {
             Prekidac("Prekidac", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
             Rastavljac("Izlazni rastavljac", StanjeSklopnogUredaja.OFF, Coordinate(100, 350)),
             Rastavljac("Rastavljac uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 275)),
+            listOf(
+                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.RADNA_SNAGA, 10F),
+                MjerniUredaj("Brojilo", TipMjernogUredaja.JALOVA_ENERGIJA, 2F)
+            )
         )
 
         mjernoPolje = MjernoPolje(
@@ -65,6 +86,10 @@ class MyPanel internal constructor() : JPanel() {
                 Sabirnica(250, 0, 125, 10),
                 Rastavljac("Rastavljac mjernog polja", StanjeSklopnogUredaja.OFF, Coordinate(285, 75))
             ),
+            listOf(
+                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.NAPON, 10F),
+                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.FREKVENCIJA, 50F)
+            )
         )
 
         dalekovod = Dalekovod(dalPolje1, dalPolje2)
@@ -107,7 +132,7 @@ class MyPanel internal constructor() : JPanel() {
 
         val g = g2d.create() as Graphics2D
         g.transform = tx
-        when (polje){
+        when (polje) {
             is DalekovodnoPolje -> drawDalekovodnoPolje(g, polje)
             is MjernoPolje -> drawMjernoPolje(g, polje)
             else -> return "Pokušaj crtanja nepodržanog polja."
@@ -167,7 +192,6 @@ class MyPanel internal constructor() : JPanel() {
             polje.prekidac.coordinate.y - rastavljaciConnectionLineY
         )
 
-
         // Izlazni rastavljac
         g.color = getColor(polje.izlazniRastavljac.stanje)
         g.fillOval(
@@ -186,7 +210,6 @@ class MyPanel internal constructor() : JPanel() {
             polje.izlazniRastavljac.coordinate.y - prekidacBottom
         )
 
-
         // Rastavljac uzemljenja
         g.color = getColor(polje.rastavljacUzemljenja.stanje)
         g.fillOval(
@@ -204,6 +227,16 @@ class MyPanel internal constructor() : JPanel() {
             polje.rastavljacUzemljenja.coordinate.x - prekidacMiddleX,
             LINE_WIDTH
         )
+
+        //Mjerni uredaji
+        for (mjerniUredaj in polje.mjerniUredaji) {
+            when(mjerniUredaj.tip){
+                TipMjernogUredaja.RADNA_SNAGA -> g.drawImage(myPicture, mjerniUredaj.coordinate.x, mjerniUredaj.coordinate.y, 90, 100, null)
+                TipMjernogUredaja.NAPON -> g.drawImage(myPicture, 0, 0, 90, 100, null)
+                TipMjernogUredaja.FREKVENCIJA -> g.drawImage(myPicture, 0, 0, 90, 100, null)
+                TipMjernogUredaja.JALOVA_ENERGIJA -> g.drawImage(myPicture, 0, 0, 90, 100, null)
+            }
+        }
 
         // Dalekovod strelica
         val arrowX = prekidacMiddleX.toDouble()

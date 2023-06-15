@@ -5,6 +5,7 @@ class MjernoPolje(
     x: Int,
     y: Int,
     val sabirnicaIRastavljac: SabirnicaIRastavljac,
+    val mjerniUredaji: List<MjerniUredaj>,
     tip: TipPolja = TipPolja.MP
 ): Polje(id, eepId, naponskiNivo, x, y, tip) {
 
