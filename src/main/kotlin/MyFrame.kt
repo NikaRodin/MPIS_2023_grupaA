@@ -8,7 +8,6 @@ class MyFrame internal constructor() : JFrame() {
     var showSignals: () -> Unit = {}
 
     private val panel: MyPanel = MyPanel()
-    private val infoBox: JTextField = JTextField("Welcome!")
     private val mouseListener: MouseListener
 
     private val upravljacDalekovoda: JButton = JButton()
@@ -18,7 +17,7 @@ class MyFrame internal constructor() : JFrame() {
     init {
         mouseListener = object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
-                infoBox.text = panel.mouseClicked(p0)?:""
+                println(panel.mouseClicked(p0) ?: "")
                 upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
                 upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
                 revalidate()
@@ -32,21 +31,18 @@ class MyFrame internal constructor() : JFrame() {
     }
 
     fun init() {
-        infoBox.setBounds(420, 545, 300, 40)
-        infoBox.horizontalAlignment = JTextField.CENTER
-        infoBox.isEditable = false
 
         upravljacDalekovoda.setBounds(10, 500, 200, 40)
         upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
         upravljacDalekovoda.isFocusPainted = false
         upravljacDalekovoda.addActionListener {
             Thread{
-                infoBox.text = getLoadingText(panel.dalekovod)
+                println(getLoadingText(panel.dalekovod))
                 upravljacDalekovoda.isEnabled = false
                 panel.dalekovod.toggleStanje(::repaint, true)
                 upravljacDalekovoda.isEnabled = true
                 upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
-                infoBox.text = "Dalekovod ${panel.dalekovod.provjeriStanje().opis}!"
+                println("Dalekovod ${panel.dalekovod.provjeriStanje().opis}!")
                 repaint()
             }.start()
         }
@@ -57,7 +53,7 @@ class MyFrame internal constructor() : JFrame() {
         upravljacMjernogPolja.addActionListener {
             panel.mjernoPolje.toggleStanje()
             upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
-            infoBox.text = "Mjerno polje ${panel.mjernoPolje.provjeriStanje().opis}!"
+            println("Mjerno polje ${panel.mjernoPolje.provjeriStanje().opis}!")
             repaint()
 
         }
@@ -71,7 +67,6 @@ class MyFrame internal constructor() : JFrame() {
         }
 
         defaultCloseOperation = EXIT_ON_CLOSE
-        contentPane.add(infoBox)
         contentPane.add(upravljacDalekovoda)
         contentPane.add(upravljacMjernogPolja)
         contentPane.add(pokaziSveSignale)

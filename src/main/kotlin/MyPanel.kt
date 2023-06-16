@@ -207,10 +207,8 @@ class MyPanel internal constructor() : JPanel() {
         val arrowX = prekidacMiddleX.toDouble()
         val arrowY = polje.izlazniRastavljac.coordinate.y.toDouble() + RASTAVLJAC_SIZE
         val dalekovodArrowLine = Line2D.Double(arrowX, arrowY - 1, arrowX, arrowY + 60.0)
-        val dalekovodArrowLine2 = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 60.0 + LINE_WIDTH)
         g.stroke = BasicStroke(LINE_WIDTH.toFloat(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL)
         g.draw(dalekovodArrowLine)
-        drawArrowHead(g, dalekovodArrowLine2, LINE_WIDTH)
     }
 
     private fun drawMjernoPolje(g: Graphics2D, polje: MjernoPolje) {
@@ -232,21 +230,5 @@ class MyPanel internal constructor() : JPanel() {
         val downY = max(s.y, r.coordinate.y)
         val rastavljacMiddle = r.coordinate.x + RASTAVLJAC_SIZE / 2
         g.fillRect(rastavljacMiddle - LINE_WIDTH / 2, upY, LINE_WIDTH, downY - upY)
-    }
-
-    private fun drawArrowHead(g2d: Graphics2D, line: Line2D.Double, arrowSize: Int) {
-        val arrowHead = Polygon()
-        arrowHead.addPoint(0, arrowSize)
-        arrowHead.addPoint(-arrowSize, -arrowSize)
-        arrowHead.addPoint(arrowSize, -arrowSize)
-
-        val tx = AffineTransform(g2d.transform)
-        val angle = atan2(line.y2 - line.y1, line.x2 - line.x1)
-        tx.translate(line.x2, line.y2)
-        tx.rotate(angle - Math.PI / 2.0)
-        val g = g2d.create() as Graphics2D
-        g.transform = tx
-        g.fill(arrowHead)
-        g.dispose()
     }
 }

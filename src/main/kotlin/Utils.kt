@@ -10,8 +10,8 @@ fun inside(coord: Coordinate, width: Int, height: Int, x: Int, y: Int): Boolean 
 
 fun getColor(stanje: StanjeSklopnogUredaja): Color {
     return when (stanje) {
-        StanjeSklopnogUredaja.ON -> Color.GREEN
-        StanjeSklopnogUredaja.OFF -> Color.RED
+        StanjeSklopnogUredaja.ON -> Color(0xFF00AA00.toInt())
+        StanjeSklopnogUredaja.OFF -> Color.BLACK
         StanjeSklopnogUredaja.MIDDLE -> TODO()
         StanjeSklopnogUredaja.ERROR -> TODO()
     }
