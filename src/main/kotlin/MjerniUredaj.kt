@@ -2,16 +2,34 @@ class MjerniUredaj(
     val id: String,
     val tip: TipMjernogUredaja,
     var measurment: Float,
-    val coordinate: Coordinate,
+    val initialMeasurment: Float = measurment
 ) {
+    fun getDescriptionString(): String {
+        return "${tip.opis} (${tip.mjernaJedinica})"
+    }
+
     fun getMeasurmentString(): String {
         return "$measurment ${tip.mjernaJedinica}"
     }
+
+    fun getSignals(eep: String, napon: String, polje: String): List<Signal> {
+
+        val signals = ArrayList<Signal>()
+
+        signals.add(Signal(eep, napon, polje, id, getDescriptionString(), getMeasurmentString()))
+
+        if(tip == TipMjernogUredaja.JALOVA_ENERGIJA){
+            signals.add(Signal(eep, napon, polje, id, "alarm", "prorada", false))
+            signals.add(Signal(eep, napon, polje, id, "alarm", "prestanak"))
+        }
+
+        return signals
+    }
 }
 
-enum class TipMjernogUredaja(val mjernaJedinica: String, val iconFileName: String) {
-    RADNA_SNAGA("MW", "radna_snaga.png"),
-    NAPON("kV", "napon.png"),
-    FREKVENCIJA("Hz", "frekvencija.png"),
-    JALOVA_ENERGIJA("kVArh", "jalova_energija.png")
+enum class TipMjernogUredaja(val opis: String, val mjernaJedinica: String) {
+    RADNA_SNAGA("radna snaga","MW"),
+    NAPON("napon","kV"),
+    FREKVENCIJA("frekvencija","Hz"),
+    JALOVA_ENERGIJA("jalova energija","kVArh")
 }

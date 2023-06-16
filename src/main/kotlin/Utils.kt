@@ -1,4 +1,5 @@
 import java.awt.Color
+import javax.swing.JTextField
 
 fun inside(coord: Coordinate, size: Int, x: Int, y: Int): Boolean {
     return inside(coord, size, size, x, y)
@@ -21,7 +22,7 @@ fun getError(uredaj: SklopniUredaj): String{
     return "${uredaj.id} mora biti " + when(uredaj.stanje) {
         StanjeSklopnogUredaja.ON -> "${StanjeSklopnogUredaja.OFF.opis}!"
         StanjeSklopnogUredaja.OFF -> "${StanjeSklopnogUredaja.ON.opis}!"
-        StanjeSklopnogUredaja.MIDDLE -> "ukljucen ili iskljucen"
+        StanjeSklopnogUredaja.MIDDLE -> "uključen ili isključen!"
         StanjeSklopnogUredaja.ERROR -> TODO()
     }
 }
@@ -29,6 +30,7 @@ fun getError(uredaj: SklopniUredaj): String{
 fun checkAndToggle(
     repaint: () -> Unit,
     wait: Boolean,
+    infoBox: JTextField,
     odabraniUredaj: SklopniUredaj,
     uvjet: StanjeSklopnogUredaja,
     vararg ostaliUredaji: SklopniUredaj,
@@ -36,28 +38,46 @@ fun checkAndToggle(
     for (uredaj in ostaliUredaji) {
         if (uredaj.stanje != uvjet) return getError(uredaj)
     }
+    if(wait) infoBox.text = getLoadingText(odabraniUredaj)
     odabraniUredaj.toggleStanje(repaint, wait)
+    infoBox.text = "${odabraniUredaj.id} ${odabraniUredaj.stanje.opis}!"
     return null
 }
 
-fun dohvatiTekstUpravljanjaDalekovodom(dalekovod: Dalekovod): String {
+fun dohvatiTekstUpravljanja(dalekovod: Dalekovod): String {
     return when (dalekovod.provjeriStanje()) {
-        StanjeDalekovoda.ON -> "Iskljuci dalekovod"
-        StanjeDalekovoda.OFF -> "Ukljuci dalekovod"
+        StanjeDalekovoda.ON -> "Isključi dalekovod"
+        StanjeDalekovoda.OFF -> "Uključi dalekovod"
     }
 }
 
-fun dohvatiTekstUpravljanjaPoljem(polje: Polje): String {
+fun dohvatiTekstUpravljanja(polje: Polje): String {
     return when (polje.provjeriStanje()) {
-        StanjePolja.ON -> "Iskljuci ${polje.tip.opis} polje"
-        StanjePolja.OFF -> "Ukljuci ${polje.tip.opis} polje"
+        StanjePolja.ON -> "Isključi ${polje.tip.opis} polje"
+        StanjePolja.OFF -> "Uključi ${polje.tip.opis} polje"
     }
 }
 
 fun getLoadingText(dalekovod: Dalekovod): String {
     return when (dalekovod.provjeriStanje()) {
-        StanjeDalekovoda.ON -> "Iskljucivanje u tijeku..."
-        StanjeDalekovoda.OFF -> "Ukljucivanje u tijeku..."
+        StanjeDalekovoda.ON -> "Isključivanje dalekovoda u tijeku..."
+        StanjeDalekovoda.OFF -> "Uključivanje dalekovoda u tijeku..."
+    }
+}
+
+fun getLoadingText(polje: Polje): String {
+    return when (polje.provjeriStanje()) {
+        StanjePolja.ON -> "Isključivanje polja u tijeku..."
+        StanjePolja.OFF -> "Uključivanje polja u tijeku..."
+    }
+}
+
+fun getLoadingText(uredaj: SklopniUredaj): String {
+    return when (uredaj.stanje) {
+        StanjeSklopnogUredaja.ON -> "Isključivanje uređaja u tijeku..."
+        StanjeSklopnogUredaja.OFF -> "Uključivanje uređaja u tijeku..."
+        StanjeSklopnogUredaja.MIDDLE -> "Pričekajte. Uređaj je u međupoložaju."
+        StanjeSklopnogUredaja.ERROR -> "Uređaj je u stanju greške!"
     }
 }
 

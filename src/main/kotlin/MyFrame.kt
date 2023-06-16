@@ -7,8 +7,8 @@ class MyFrame internal constructor() : JFrame() {
     var updateSignals: (List<Signal>) -> Unit = {}
     var showSignals: () -> Unit = {}
 
-    private val panel: MyPanel = MyPanel { name -> ImageIcon(this.javaClass.getResource(name)).image }
-    private val infoBox: JTextField = JTextField("Welcome!")
+    private val panel: MyPanel = MyPanel()
+    private val infoBox: JTextField = JTextField("Dobrodošli!")
     private val mouseListener: MouseListener
 
     private val upravljacDalekovoda: JButton = JButton()
@@ -19,9 +19,10 @@ class MyFrame internal constructor() : JFrame() {
         mouseListener = object : MouseListener {
             override fun mouseClicked(p0: MouseEvent?) {
                 Thread {
-                    infoBox.text = panel.mouseClicked(p0)?:""
-                    upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
-                    upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
+                    val error = panel.mouseClicked(p0, infoBox)
+                    if(error != null) infoBox.text = error
+                    upravljacDalekovoda.text = dohvatiTekstUpravljanja(panel.dalekovod)
+                    upravljacMjernogPolja.text = dohvatiTekstUpravljanja(panel.mjernoPolje)
                     revalidate()
                     repaint()
                 }.start()
@@ -34,12 +35,12 @@ class MyFrame internal constructor() : JFrame() {
     }
 
     fun init() {
-        infoBox.setBounds(420, 545, 300, 40)
+        infoBox.setBounds(420, 585, 300, 40)
         infoBox.horizontalAlignment = JTextField.CENTER
         infoBox.isEditable = false
 
-        upravljacDalekovoda.setBounds(10, 500, 200, 40)
-        upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
+        upravljacDalekovoda.setBounds(10, 540, 200, 40)
+        upravljacDalekovoda.text = dohvatiTekstUpravljanja(panel.dalekovod)
         upravljacDalekovoda.isFocusPainted = false
         upravljacDalekovoda.addActionListener {
             Thread{
@@ -47,26 +48,29 @@ class MyFrame internal constructor() : JFrame() {
                 upravljacDalekovoda.isEnabled = false
                 panel.dalekovod.toggleStanje(::repaint, true)
                 upravljacDalekovoda.isEnabled = true
-                upravljacDalekovoda.text = dohvatiTekstUpravljanjaDalekovodom(panel.dalekovod)
+                upravljacDalekovoda.text = dohvatiTekstUpravljanja(panel.dalekovod)
                 infoBox.text = "Dalekovod ${panel.dalekovod.provjeriStanje().opis}!"
                 repaint()
             }.start()
         }
 
-        upravljacMjernogPolja.setBounds(10, 545, 200, 40)
-        upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
+        upravljacMjernogPolja.setBounds(10, 585, 200, 40)
+        upravljacMjernogPolja.text = dohvatiTekstUpravljanja(panel.mjernoPolje)
         upravljacMjernogPolja.isFocusPainted = false
         upravljacMjernogPolja.addActionListener {
             Thread{
+                infoBox.text = getLoadingText(panel.mjernoPolje)
+                upravljacMjernogPolja.isEnabled = false
                 panel.mjernoPolje.toggleStanje(::repaint, true)
-                upravljacMjernogPolja.text = dohvatiTekstUpravljanjaPoljem(panel.mjernoPolje)
+                upravljacMjernogPolja.isEnabled = true
+                upravljacMjernogPolja.text = dohvatiTekstUpravljanja(panel.mjernoPolje)
                 infoBox.text = "Mjerno polje ${panel.mjernoPolje.provjeriStanje().opis}!"
                 repaint()
             }.start()
         }
 
-        pokaziSveSignale.setBounds(10, 590, 200, 40)
-        pokaziSveSignale.text = "Svi signali"
+        pokaziSveSignale.setBounds(10, 630, 200, 40)
+        pokaziSveSignale.text = "Liste signala"
         pokaziSveSignale.isFocusPainted = false
         pokaziSveSignale.addActionListener {
             updateSignals()

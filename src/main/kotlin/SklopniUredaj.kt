@@ -70,7 +70,7 @@ abstract class SklopniUredaj(
 }
 
 enum class StanjeSklopnogUredaja(val opis: String) {
-    MIDDLE("međupoložaj"), OFF("iskljucen"), ON("ukljucen"), ERROR("kvar signalizacije")
+    MIDDLE("međupoložaj"), OFF("isključen"), ON("uključen"), ERROR("kvar signalizacije")
 }
 
 enum class KomandaSklopnogUredaja(val opis: String) {

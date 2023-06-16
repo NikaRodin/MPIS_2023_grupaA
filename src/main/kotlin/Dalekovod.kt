@@ -61,8 +61,16 @@ class Dalekovod(
 
         println("=> Uključiti prekidače s obje strane")
         doneCounter = 0
-        Thread { dalPolje1.prekidac.ukljuci(repaint, wait); doneCounter++ }.start()
-        Thread { dalPolje2.prekidac.ukljuci(repaint, wait); doneCounter++ }.start()
+        Thread {
+            dalPolje1.prekidac.ukljuci(repaint, wait)
+            dalPolje1.mjerniUredaji.forEach { it.measurment = it.initialMeasurment }
+            doneCounter++
+        }.start()
+        Thread {
+            dalPolje2.prekidac.ukljuci(repaint, wait)
+            dalPolje2.mjerniUredaji.forEach { it.measurment = it.initialMeasurment }
+            doneCounter++
+        }.start()
         while (doneCounter != 2) sleep(10)
 
         repaint()
@@ -76,8 +84,16 @@ class Dalekovod(
 
         println("=> Isključiti prekidače s obje strane")
         doneCounter = 0
-        Thread { dalPolje1.prekidac.iskljuci(repaint, wait); doneCounter++ }.start()
-        Thread { dalPolje2.prekidac.iskljuci(repaint, wait); doneCounter++ }.start()
+        Thread {
+            dalPolje1.prekidac.iskljuci(repaint, wait)
+            dalPolje1.mjerniUredaji.forEach { it.measurment = 0F }
+            doneCounter++
+        }.start()
+        Thread {
+            dalPolje2.prekidac.iskljuci(repaint, wait)
+            dalPolje2.mjerniUredaji.forEach { it.measurment = 0F }
+            doneCounter++
+        }.start()
         while (doneCounter != 2) sleep(10)
         repaint()
 
@@ -111,5 +127,5 @@ class Dalekovod(
 }
 
 enum class StanjeDalekovoda(val opis: String) {
-    ON("ukljucen"), OFF("iskljucen")
+    ON("uključen"), OFF("isključen")
 }

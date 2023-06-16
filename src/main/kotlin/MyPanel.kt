@@ -2,18 +2,13 @@ import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.geom.AffineTransform
 import java.awt.geom.Line2D
-import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
-import javax.swing.ImageIcon
 import javax.swing.JPanel
+import javax.swing.JTextField
 import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
 
-class MyPanel(
-    private val resourceGetter: (String) -> Image
-) : JPanel() {
+class MyPanel : JPanel() {
 
     var onRepaint: () -> Unit = {}
 
@@ -22,11 +17,9 @@ class MyPanel(
     val mjernoPolje: MjernoPolje
     val dalekovod: Dalekovod
 
-    val image = resourceGetter("poll.png")
-
     init {
 
-        this.preferredSize = Dimension(730, 700)
+        this.preferredSize = Dimension(730, 685)
 
         dalPolje1 = DalekovodnoPolje(
             "DV A2",
@@ -36,19 +29,19 @@ class MyPanel(
             listOf(
                 SabirnicaIRastavljac(
                     Sabirnica(0, 0, 250, 10),
-                    Rastavljac("Rastavljac S1", StanjeSklopnogUredaja.OFF, Coordinate(50, 75))
+                    Rastavljac("Rastavljač S1", StanjeSklopnogUredaja.OFF, Coordinate(50, 75))
                 ),
                 SabirnicaIRastavljac(
                     Sabirnica(0, 20, 250, 10),
-                    Rastavljac("Rastavljac S2", StanjeSklopnogUredaja.OFF, Coordinate(150, 75))
+                    Rastavljac("Rastavljač S2", StanjeSklopnogUredaja.OFF, Coordinate(150, 75))
                 ),
             ),
-            Prekidac("Prekidac", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
-            Rastavljac("Izlazni rastavljac", StanjeSklopnogUredaja.OFF, Coordinate(100, 350)),
-            Rastavljac("Rastavljac uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 275)),
+            Prekidac("Prekidač", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
+            Rastavljac("Izlazni rastavljač", StanjeSklopnogUredaja.OFF, Coordinate(100, 325)),
+            Rastavljac("Rastavljač uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 400)),
             listOf(
-                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.RADNA_SNAGA, 10F),
-                MjerniUredaj("Brojilo", TipMjernogUredaja.JALOVA_ENERGIJA, 2F)
+                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.RADNA_SNAGA, 20F),
+                MjerniUredaj("Brojilo", TipMjernogUredaja.JALOVA_ENERGIJA, 5F)
             )
         )
 
@@ -60,15 +53,15 @@ class MyPanel(
             listOf(
                 SabirnicaIRastavljac(
                     Sabirnica(0, 0, 250, 10),
-                    Rastavljac("Rastavljac S", StanjeSklopnogUredaja.OFF, Coordinate(100, 75))
+                    Rastavljac("Rastavljač S", StanjeSklopnogUredaja.OFF, Coordinate(100, 75))
                 ),
             ),
-            Prekidac("Prekidac", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
-            Rastavljac("Izlazni rastavljac", StanjeSklopnogUredaja.OFF, Coordinate(100, 350)),
-            Rastavljac("Rastavljac uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 275)),
+            Prekidac("Prekidač", StanjeSklopnogUredaja.OFF, Coordinate(100, 200)),
+            Rastavljac("Izlazni rastavljač", StanjeSklopnogUredaja.OFF, Coordinate(100, 325)),
+            Rastavljac("Rastavljač uzemljenja", StanjeSklopnogUredaja.OFF, Coordinate(200, 400)),
             listOf(
-                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.RADNA_SNAGA, 10F),
-                MjerniUredaj("Brojilo", TipMjernogUredaja.JALOVA_ENERGIJA, 2F)
+                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.RADNA_SNAGA, 20F),
+                MjerniUredaj("Brojilo", TipMjernogUredaja.JALOVA_ENERGIJA, 5F)
             )
         )
 
@@ -79,10 +72,10 @@ class MyPanel(
             350, 0,
             SabirnicaIRastavljac(
                 Sabirnica(250, 0, 125, 10),
-                Rastavljac("Rastavljac mjernog polja", StanjeSklopnogUredaja.OFF, Coordinate(285, 75))
+                Rastavljac("Rastavljač mjernog polja", StanjeSklopnogUredaja.OFF, Coordinate(285, 75))
             ),
             listOf(
-                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.NAPON, 10F),
+                MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.NAPON, 110F),
                 MjerniUredaj("Mjerni pretvornik", TipMjernogUredaja.FREKVENCIJA, 50F)
             )
         )
@@ -93,12 +86,11 @@ class MyPanel(
         mjernoPolje.ukljuciImmediate()
     }
 
-    fun mouseClicked(p0: MouseEvent?): String? {
+    fun mouseClicked(p0: MouseEvent?, infoBox: JTextField): String? {
         p0?.let {
             println("clicked x, y: ${p0.x}, ${p0.y}")
             val polja = listOf(dalPolje1, dalPolje2, mjernoPolje)
-            val clickError = polja.firstNotNullOfOrNull { it.click(p0.x, p0.y, ::repaint, true) }
-
+            val clickError = polja.firstNotNullOfOrNull { it.click(p0.x, p0.y, ::repaint, true, infoBox) }
             if (clickError != null)
                 return clickError
 
@@ -118,7 +110,6 @@ class MyPanel(
         drawPolje(g2d, dalPolje1)
         drawPolje(g2d, dalPolje2)
         drawPolje(g2d, mjernoPolje)
-        g2d.drawImage(image, 600, 150, 200, 100, null)
     }
 
     private fun drawPolje(g2d: Graphics2D, polje: Polje): String? {
@@ -224,22 +215,17 @@ class MyPanel(
             LINE_WIDTH
         )
 
-        //Mjerni uredaji
-        for (mjerniUredaj in polje.mjerniUredaji) {
-            val icon = resourceGetter("poll.png")
-            when(mjerniUredaj.tip){
-                TipMjernogUredaja.RADNA_SNAGA -> g.drawImage(myPicture, mjerniUredaj.coordinate.x, mjerniUredaj.coordinate.y, 90, 100, null)
-                TipMjernogUredaja.NAPON -> g.drawImage(myPicture, 0, 0, 90, 100, null)
-                TipMjernogUredaja.FREKVENCIJA -> g.drawImage(myPicture, 0, 0, 90, 100, null)
-                TipMjernogUredaja.JALOVA_ENERGIJA -> g.drawImage(myPicture, 0, 0, 90, 100, null)
-            }
-        }
+        // Oznaka uzemljenja
+        drawGroundSymbol(
+            g, polje.rastavljacUzemljenja.coordinate.x + RASTAVLJAC_SIZE,
+            polje.rastavljacUzemljenja.coordinate.y + RASTAVLJAC_SIZE / 2 - LINE_WIDTH / 2
+        )
 
         // Dalekovod strelica
         val arrowX = prekidacMiddleX.toDouble()
         val arrowY = polje.izlazniRastavljac.coordinate.y.toDouble() + RASTAVLJAC_SIZE
-        val dalekovodArrowLine = Line2D.Double(arrowX, arrowY - 1, arrowX, arrowY + 60.0)
-        val dalekovodArrowLine2 = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 60.0 + LINE_WIDTH)
+        val dalekovodArrowLine = Line2D.Double(arrowX, arrowY - 1, arrowX, arrowY + 100.0)
+        val dalekovodArrowLine2 = Line2D.Double(arrowX, arrowY, arrowX, arrowY + 100.0 + LINE_WIDTH)
         g.stroke = BasicStroke(LINE_WIDTH.toFloat(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL)
         g.draw(dalekovodArrowLine)
         drawArrowHead(g, dalekovodArrowLine2, LINE_WIDTH)
@@ -280,6 +266,14 @@ class MyPanel(
         g.transform = tx
         g.fill(arrowHead)
         g.dispose()
+    }
+
+    private fun drawGroundSymbol(g: Graphics2D, x: Int, y: Int) {
+        val lw = LINE_WIDTH
+        g.fillRect(x, y, lw, lw)
+        g.fillRect(x + lw, y - lw, lw / 2, 3 * lw)
+        g.fillRect(x + 2 * lw, y - lw + 4, lw / 2, lw + 2 * (lw - 4))
+        g.fillRect(x + 3 * lw, y - lw + 8, lw / 2, lw + 2 * (lw - 8))
     }
 
     override fun repaint() {
